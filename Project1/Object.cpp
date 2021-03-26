@@ -40,7 +40,12 @@ void Object::initModel()
 
 void Object::initTexture()
 {
-	this->texture_id = loadBMP(this->texturePath);
+	if (strstr(this->texturePath, ".bmp")) {
+		this->texture_id = loadBMP(this->texturePath);
+	}
+	else {
+		this->texture_id = loadDDS(this->texturePath);
+	}
 }
 
 void Object::initBuffers(GLuint program_id)
@@ -99,7 +104,7 @@ void Object::initBuffers(GLuint program_id)
 void Object::initMatrices(glm::mat4 view)
 {
 	this->model = glm::mat4();
-	this->model = glm::translate(this->model, glm::vec3(rand() % 10, 0, 0));
+	//this->model = glm::translate(this->model, glm::vec3(rand() % 10, 0, 0));
 	this->mv = view * this->model;
 }
 

@@ -26,21 +26,20 @@ void Scene::render()
 }
 
 void Scene::init(const char* fragment, const char* vertex, int width, int height) {
-	Object torus = Object("Objects/torus.obj", "Textures/uvtemplate.bmp");
+	Object cube = Object("Objects/box.obj", "Textures/house_bricks.bmp");
 	Object teapot = Object("Objects/teapot.obj", "Textures/Yellobrk.bmp");
 
-	for (int i = 0; i < 20; i++) {
-		if (i % 2 == 0) {
-			torus.initModel();
-			torus.initTexture();
-			this->objects[i] = torus;
-		}
-		else {
-			teapot.initModel();
-			teapot.initTexture();
-			this->objects[i] = teapot;
-		}
+	for (int i = 0; i < 10; i++) {
+		cube.initModel();
+		cube.initTexture();
+		this->objects[i] = cube;
 	}
+	for (int i = 10; i < 20; i++) {
+		teapot.initModel();
+		teapot.initTexture();
+		this->objects[i] = teapot;
+	}
+
 	this->light_position = glm::vec3(4.0f, 4.0f, 4.0f);
 	this->initShaders(fragment, vertex);
 	this->initCamera(width, height);
@@ -49,8 +48,20 @@ void Scene::init(const char* fragment, const char* vertex, int width, int height
 
 void Scene::initCamera(int width, int height) {
 	this->camera = Camera(width, height);
-	for (int i = 0; i < 20; i++) {
+	for (int i = 0; i < 10; i++) {
 		objects[i].initMatrices(this->camera.getView());
+		if (i % 2 == 0) {
+			objects[i].model = glm::translate(objects[i].model, glm::vec3(2.0f * i, 0.0f, 0.0f));
+		}
+		else {
+			objects[i].model = glm::translate(objects[i].model, glm::vec3(2.0f * (i - 1), 0.6f, -0.25f));
+			objects[i].model = glm::scale(objects[i].model, glm::vec3(0.99f, 1.0f, 0.7f));
+			objects[i].model = glm::rotate(objects[i].model, 0.785398163f, glm::vec3(1.0f, 0.0f, 0.0f));
+		}
+	}
+	for (int i = 10; i < 20; i++) {
+		objects[i].model = glm::translate(objects[i].model, glm::vec3(4.0f * (i - 10), 0.0f, 1.0f));
+		objects[i].model = glm::scale(objects[i].model, glm::vec3(0.2f, 0.2f, 0.2f));
 	}
 }
 

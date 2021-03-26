@@ -108,7 +108,7 @@ void Object::render(glm::mat4 view, GLuint uniform_mv, GLuint uniform_material_a
 	glBindTexture(GL_TEXTURE_2D, this->texture_id);
 
 	// Do transformation
-	this->model = glm::rotate(this->model, 0.01f, glm::vec3(1.0f, 0.5f, 0.2f));
+	//this->model = glm::rotate(this->model, 0.01f, glm::vec3(1.0f, 0.5f, 0.2f));
 	this->mv = view * this->model;
 
 	// Send mv

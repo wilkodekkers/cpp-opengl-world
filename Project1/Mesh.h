@@ -4,7 +4,7 @@
 #include "glsl.h"
 
 
-class Material
+class Mesh
 {
 public:
 	glm::vec3 ambient_color;
@@ -12,8 +12,8 @@ public:
 	glm::vec3 specular_color;
 	float power;
 
-	Material();
-	Material(glm::vec3 ambient_color, glm::vec3 diffuse_color, glm::vec3 specular_color, float power);
+	Mesh();
+	Mesh(glm::vec3 ambient_color, glm::vec3 diffuse_color, glm::vec3 specular_color, float power);
 
 	void fillUniformVars(GLuint uniform_material_ambient, GLuint uniform_material_diffuse, GLuint uniform_specular, GLuint uniform_material_power);
 };

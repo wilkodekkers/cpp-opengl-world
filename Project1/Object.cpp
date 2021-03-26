@@ -5,7 +5,7 @@ Object::Object()
 	this->normals = vector<glm::vec3>();
 	this->vertices = vector<glm::vec3>();
 	this->uvs = vector<glm::vec2>();
-	this->material = Material(
+	this->mesh = Mesh(
 		glm::vec3(0.0f, 0.0f, 0.0f), // Ambient
 		glm::vec3(0.5f, 0.5f, 0.3f), // Diffuse
 		glm::vec3(1.0f, 1.0f, 1.0f), // Specular
@@ -17,7 +17,7 @@ Object::Object(const char* modelPath, const char* texturePath)
 	this->normals = vector<glm::vec3>();
 	this->vertices = vector<glm::vec3>();
 	this->uvs = vector<glm::vec2>();
-	this->material = Material(
+	this->mesh = Mesh(
 		glm::vec3(0.0f, 0.0f, 0.0f), // Ambient
 		glm::vec3(0.5f, 0.5f, 0.3f), // Diffuse
 		glm::vec3(1.0f, 1.0f, 1.0f), // Specular
@@ -26,11 +26,11 @@ Object::Object(const char* modelPath, const char* texturePath)
 	this->texturePath = texturePath;
 }
 
-Object::Object(const char* modelPath, const char* texturePath, Material material)
+Object::Object(const char* modelPath, const char* texturePath, Mesh mesh)
 {
 	this->modelPath = modelPath;
 	this->texturePath = texturePath;
-	this->material = material;
+	this->mesh = mesh;
 }
 
 void Object::initModel()
@@ -40,7 +40,7 @@ void Object::initModel()
 
 void Object::initTexture()
 {
-	this->texture_id = loadBMP("Textures/Yellobrk.bmp");
+	this->texture_id = loadBMP(this->texturePath);
 }
 
 void Object::initBuffers(GLuint program_id)
@@ -108,14 +108,14 @@ void Object::render(glm::mat4 view, GLuint uniform_mv, GLuint uniform_material_a
 	glBindTexture(GL_TEXTURE_2D, this->texture_id);
 
 	// Do transformation
-	this->model = glm::rotate(this->model, 0.01f, glm::vec3(0.5f, 1.0f, 0.5f));
+	this->model = glm::rotate(this->model, 0.01f, glm::vec3(1.0f, 0.5f, 0.2f));
 	this->mv = view * this->model;
 
 	// Send mv
 	glUniformMatrix4fv(uniform_mv, 1, GL_FALSE, glm::value_ptr(this->mv));
 
 	// Fill uniform vars for material
-	this->material.fillUniformVars(uniform_material_ambient, uniform_material_diffuse, uniform_specular, uniform_material_power);
+	this->mesh.fillUniformVars(uniform_material_ambient, uniform_material_diffuse, uniform_specular, uniform_material_power);
 
 	// Send vao
 	glBindVertexArray(this->vao);

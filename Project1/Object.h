@@ -8,7 +8,7 @@
 #include "glsl.h"
 #include "objloader.h"
 #include "texture.h"
-#include "Material.h"
+#include "Mesh.h"
 
 using namespace std;
 
@@ -33,14 +33,14 @@ public:
 	GLuint vbo_normals;
 	GLuint vbo_uvs;
 
-	Material material;
+	Mesh mesh;
 
 	const char* modelPath;
 	const char* texturePath;
 
 	Object();
 	Object(const char* modelPath, const char* texturePath);
-	Object(const char* modelPath, const char* texturePath, Material material);
+	Object(const char* modelPath, const char* texturePath, Mesh mesh);
 
 	void initModel();
 	void initTexture();

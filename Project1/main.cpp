@@ -11,7 +11,7 @@ using namespace std;
 // Consts
 //--------------------------------------------------------------------------------
 
-const int WIDTH = 800, HEIGHT = 600;
+const int WIDTH = 1000, HEIGHT = 625;
 
 const char* fragshader_name = "fragmentshader.frag";
 const char* vertexshader_name = "vertexshader.vert";
@@ -26,7 +26,9 @@ unsigned const int DELTA_TIME = 10;
 // Scene
 Scene scene;
 
-float lastX = 400;
+bool isFullscreen = false;
+
+float lastX = 1200;
 float lastY = 300;
 float pitch = 0.0f;
 float yaw = 0.0f;
@@ -50,6 +52,12 @@ void keyboardHandler(unsigned char key, int a, int b)
 		camera.m_CameraPos -= glm::normalize(glm::cross(camera.m_CameraFront, camera.m_CameraUp)) * cameraSpeed;
 	if (key == 'd')
 		camera.m_CameraPos += glm::normalize(glm::cross(camera.m_CameraFront, camera.m_CameraUp)) * cameraSpeed;
+	if (key == 'f')
+		if (isFullscreen)
+			glutReshapeWindow(WIDTH, HEIGHT);
+		else
+			glutFullScreen();
+	isFullscreen = !isFullscreen;
 	camera.m_CameraPos.y = 1.75f;
 	scene.camera = camera;
 }
@@ -58,7 +66,7 @@ void keyboardHandler(unsigned char key, int a, int b)
 // Keyboard handling
 //--------------------------------------------------------------------------------
 
-void mouseHandler(int x, int y) 
+void mouseHandler(int x, int y)
 {
 	float xOffset = x - lastX;
 	float yOffset = y - lastY;
@@ -115,13 +123,12 @@ void InitGlutGlew(int argc, char** argv)
 {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-	glutInitWindowSize(GLUT_SCREEN_WIDTH, GLUT_SCREEN_HEIGHT);
+	glutInitWindowSize(WIDTH, HEIGHT);
 	glutCreateWindow("Hello OpenGL");
 	glutDisplayFunc(Render);
 	glutKeyboardFunc(keyboardHandler);
 	glutPassiveMotionFunc(mouseHandler);
 	glutTimerFunc(DELTA_TIME, Render, 0);
-	glutFullScreen();
 	glutSetCursor(GLUT_CURSOR_NONE);
 
 	glEnable(GL_MULTISAMPLE);

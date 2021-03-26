@@ -18,7 +18,7 @@ void Scene::render()
 	glUseProgram(this->program_id);
 
 	for (int i = 0; i < 20; i++) {
-		objects[i].render(this->camera.getView(), uniform_mv, uniform_material_ambient, uniform_material_diffuse, uniform_specular, uniform_material_power);
+		objects[i].render(camera.getView(), uniform_mv, uniform_material_ambient, uniform_material_diffuse, uniform_specular, uniform_material_power);
 	}
 
 	// Swap buffers
@@ -73,7 +73,7 @@ void Scene::initBuffers()
 	glUseProgram(this->program_id);
 
 	// Fill uniform vars
-	glUniformMatrix4fv(uniform_proj, 1, GL_FALSE, glm::value_ptr(this->camera.getProjection()));
+	glUniformMatrix4fv(uniform_proj, 1, GL_FALSE, glm::value_ptr(camera.getProjection()));
 	glUniform3fv(uniform_light_pos, 1, glm::value_ptr(light_position));
 }
 

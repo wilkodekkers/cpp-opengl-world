@@ -7,7 +7,6 @@
 class Scene
 {
 private:
-	Camera camera;
 	Object objects[20];
 	glm::vec3 light_position;
 	
@@ -17,7 +16,11 @@ private:
 	GLuint uniform_material_diffuse;
 	GLuint uniform_specular;
 	GLuint uniform_material_power;
+
+	float cameraSpeed = 0.05f;
 public:
+	Camera camera;
+
 	Scene();
 	void render();
 	void init(const char* fragment, const char* vertex, int width, int height);

@@ -32,8 +32,19 @@ Scene scene;
 
 void keyboardHandler(unsigned char key, int a, int b)
 {
+	const float cameraSpeed = 0.05f;
+	Camera camera = scene.camera;
 	if (key == 27)
 		glutExit();
+	if (key == 'w')
+		camera.m_CameraPos += cameraSpeed * camera.m_CameraFront;
+	if (key == 's')
+		camera.m_CameraPos -= cameraSpeed * camera.m_CameraFront;
+	if (key == 'a')
+		camera.m_CameraPos -= glm::normalize(glm::cross(camera.m_CameraFront, camera.m_CameraUp)) * cameraSpeed;
+	if (key == 'd')
+		camera.m_CameraPos += glm::normalize(glm::cross(camera.m_CameraFront, camera.m_CameraUp)) * cameraSpeed;
+	scene.camera = camera;
 }
 
 
@@ -97,7 +108,7 @@ int main(int argc, char** argv)
 
 	// Hide console window
 	HWND hWnd = GetConsoleWindow();
-	ShowWindow(hWnd, SW_HIDE);
+	ShowWindow(hWnd, SW_SHOW);
 
 	// Main loop
 	glutMainLoop();

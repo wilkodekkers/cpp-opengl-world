@@ -17,7 +17,7 @@ void Scene::render()
 	// Attach to program_id
 	glUseProgram(this->program_id);
 
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 8; i++) {
 		house[i].render(camera.getView(), uniform_mv, uniform_material_ambient, uniform_material_diffuse, uniform_specular, uniform_material_power);
 	}
 
@@ -29,9 +29,12 @@ void Scene::init(const char* fragment, const char* vertex, int width, int height
 	Object cube = Object("Objects/box.obj", "Textures/house_bricks.bmp");
 	cube.initModel();
 	cube.initTexture();
-	
+
 	for (int i = 0; i < 4; i++) {
 		house[i] = House(cube, cube, glm::vec3(2.0 * i, 0.0, 0.0));
+	}
+	for (int i = 4; i < 8; i++) {
+		house[i] = House(cube, cube, glm::vec3(2.0 * (i - 4), 0.0, 4.0));
 	}
 
 	this->light_position = glm::vec3(4.0f, 4.0f, 4.0f);
@@ -42,14 +45,14 @@ void Scene::init(const char* fragment, const char* vertex, int width, int height
 
 void Scene::initCamera(int width, int height) {
 	this->camera = Camera(width, height);
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 8; i++) {
 		house[i].initMatrices(this->camera.getView());
 	}
 }
 
 void Scene::initBuffers()
 {
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 8; i++) {
 		house[i].initBuffers(program_id);
 	}
 

@@ -40,8 +40,9 @@ void House::initMatrices(glm::mat4 view)
 	roof.initMatrices(view);
 
 	base.move(pos);
+
+	roof.move(pos + glm::vec3(0.0, 0.65, 0.25));
 	roof.scale(glm::vec3(1.0, 1.0, 0.7));
-	roof.move(pos + glm::vec3(0.0, 0.65, 0.35));
 	roof.rotate(-0.78, glm::vec3(1.0, 0.0, 0.0));
 }
 

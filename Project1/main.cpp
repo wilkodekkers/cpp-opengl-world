@@ -33,6 +33,9 @@ float lastY = 300;
 float pitch = 0.0f;
 float yaw = 0.0f;
 
+float deltaForward = 0.0f;
+float deltaSide = 0.0f;
+
 //--------------------------------------------------------------------------------
 // Keyboard handling
 //--------------------------------------------------------------------------------
@@ -42,16 +45,33 @@ void keyboardHandler(unsigned char key, int a, int b)
 	const float cameraSpeed = 0.1f;
 	const float rotateSpeed = 0.2f;
 	Camera camera = scene.camera;
-	if (key == 27)
+
+	switch (key) {
+	case 27:
 		glutExit();
-	if (key == 'w')
-		camera.m_CameraPos += cameraSpeed * camera.m_CameraFront;
-	if (key == 's')
-		camera.m_CameraPos -= cameraSpeed * camera.m_CameraFront;
-	if (key == 'a')
-		camera.m_CameraPos -= glm::normalize(glm::cross(camera.m_CameraFront, camera.m_CameraUp)) * cameraSpeed;
-	if (key == 'd')
-		camera.m_CameraPos += glm::normalize(glm::cross(camera.m_CameraFront, camera.m_CameraUp)) * cameraSpeed;
+		break;
+	case 'w':
+		deltaForward = 0.1f;
+		break;
+	case 's':
+		deltaForward = -0.1f;
+		break;
+	case 'a':
+		deltaSide = 0.1f;
+		break;
+	case 'd':
+		deltaSide = -0.1f;
+		break;
+	}
+
+	if (key == 'i')
+		camera.m_CameraFront.y += cameraSpeed;
+	if (key == 'k')
+		camera.m_CameraFront.y -= cameraSpeed;
+	if (key == 'j')
+		camera.m_CameraFront.x -= cameraSpeed;
+	if (key == 'l')
+		camera.m_CameraFront.x += cameraSpeed;
 	if (key == 'f')
 		if (isFullscreen) {
 			glutReshapeWindow(WIDTH, HEIGHT);
@@ -61,8 +81,20 @@ void keyboardHandler(unsigned char key, int a, int b)
 			glutReshapeWindow(1920, 1080);
 		}
 	isFullscreen = !isFullscreen;
-	camera.m_CameraPos.y = 1.75f;
 	scene.camera = camera;
+}
+
+void keyboardUpHandler(unsigned char key, int a, int b) {
+	switch (key) {
+	case 'w':
+	case 's':
+		deltaForward = 0.0f;
+		break;
+	case 'a':
+	case 'd':
+		deltaSide = 0.0f;
+		break;
+	}
 }
 
 //--------------------------------------------------------------------------------
@@ -101,6 +133,13 @@ void mouseHandler(int x, int y)
 
 void Render()
 {
+	if (deltaForward) {
+		scene.camera.m_CameraPos += deltaForward * scene.camera.m_CameraFront;
+	}
+	if (deltaSide) {
+		scene.camera.m_CameraPos -= glm::normalize(glm::cross(scene.camera.m_CameraFront, scene.camera.m_CameraUp)) * deltaSide;
+	}
+	scene.camera.m_CameraPos.y = 1.75f;
 	scene.render();
 }
 
@@ -130,6 +169,8 @@ void InitGlutGlew(int argc, char** argv)
 	glutCreateWindow("Hello OpenGL");
 	glutDisplayFunc(Render);
 	glutKeyboardFunc(keyboardHandler);
+	glutIgnoreKeyRepeat(1);
+	glutKeyboardUpFunc(keyboardUpHandler);
 	glutPassiveMotionFunc(mouseHandler);
 	glutTimerFunc(DELTA_TIME, Render, 0);
 	glutSetCursor(GLUT_CURSOR_NONE);

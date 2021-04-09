@@ -53,10 +53,13 @@ void keyboardHandler(unsigned char key, int a, int b)
 	if (key == 'd')
 		camera.m_CameraPos += glm::normalize(glm::cross(camera.m_CameraFront, camera.m_CameraUp)) * cameraSpeed;
 	if (key == 'f')
-		if (isFullscreen)
+		if (isFullscreen) {
 			glutReshapeWindow(WIDTH, HEIGHT);
-		else
+		}
+		else {
 			glutFullScreen();
+			glutReshapeWindow(1920, 1080);
+		}
 	isFullscreen = !isFullscreen;
 	camera.m_CameraPos.y = 1.75f;
 	scene.camera = camera;
@@ -154,7 +157,7 @@ int main(int argc, char** argv)
 
 	// Hide console window
 	HWND hWnd = GetConsoleWindow();
-	ShowWindow(hWnd, SW_SHOW);
+	ShowWindow(hWnd, SW_HIDE);
 
 	// Main loop
 	glutMainLoop();

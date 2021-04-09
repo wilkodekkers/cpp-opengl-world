@@ -42,6 +42,10 @@ public:
 	Object(const char* modelPath, const char* texturePath);
 	Object(const char* modelPath, const char* texturePath, Mesh mesh);
 
+	void move(glm::vec3 pos);
+	void rotate(float radians, glm::vec3 angles);
+	void scale(glm::vec3 scales);
+
 	void initModel();
 	void initTexture();
 	void initBuffers(GLuint program_id);

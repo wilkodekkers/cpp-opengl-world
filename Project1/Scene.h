@@ -2,12 +2,13 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include "Object.h"
+#include "House.h"
 #include "Camera.h"
 
 class Scene
 {
 private:
-	Object objects[20];
+	House house[4];
 	glm::vec3 light_position;
 	
 	GLuint program_id;

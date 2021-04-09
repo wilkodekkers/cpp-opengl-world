@@ -33,6 +33,21 @@ Object::Object(const char* modelPath, const char* texturePath, Mesh mesh)
 	this->mesh = mesh;
 }
 
+void Object::move(glm::vec3 pos)
+{
+	this->model = glm::translate(this->model, pos);
+}
+
+void Object::rotate(float radians, glm::vec3 angles)
+{
+	model = glm::rotate(model, radians, angles);
+}
+
+void Object::scale(glm::vec3 scales)
+{
+	model = glm::scale(model, scales);
+}
+
 void Object::initModel()
 {
 	loadOBJ(this->modelPath, this->vertices, this->uvs, this->normals);
@@ -104,7 +119,6 @@ void Object::initBuffers(GLuint program_id)
 void Object::initMatrices(glm::mat4 view)
 {
 	this->model = glm::mat4();
-	//this->model = glm::translate(this->model, glm::vec3(rand() % 10, 0, 0));
 	this->mv = view * this->model;
 }
 

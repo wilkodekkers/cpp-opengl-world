@@ -36,16 +36,15 @@ float yaw = 0.0f;
 float deltaForward = 0.0f;
 float deltaSide = 0.0f;
 
+float moveUp = 0.0f;
+float moveSide = 0.0f;
+
 //--------------------------------------------------------------------------------
 // Keyboard handling
 //--------------------------------------------------------------------------------
 
 void keyboardHandler(unsigned char key, int a, int b)
 {
-	const float cameraSpeed = 0.1f;
-	const float rotateSpeed = 0.2f;
-	Camera camera = scene.camera;
-
 	switch (key) {
 	case 27:
 		glutExit();
@@ -62,17 +61,19 @@ void keyboardHandler(unsigned char key, int a, int b)
 	case 'd':
 		deltaSide = -0.1f;
 		break;
-	}
-
-	if (key == 'i')
-		camera.m_CameraFront.y += cameraSpeed;
-	if (key == 'k')
-		camera.m_CameraFront.y -= cameraSpeed;
-	if (key == 'j')
-		camera.m_CameraFront.x -= cameraSpeed;
-	if (key == 'l')
-		camera.m_CameraFront.x += cameraSpeed;
-	if (key == 'f')
+	case 'i':
+		moveUp = 0.01f;
+		break;
+	case 'k':
+		moveUp = -0.01f;
+		break;
+	case 'j':
+		moveSide = 0.01f;
+		break;
+	case 'l':
+		moveSide = -0.01f;
+		break;
+	case 'f':
 		if (isFullscreen) {
 			glutReshapeWindow(WIDTH, HEIGHT);
 		}
@@ -80,8 +81,9 @@ void keyboardHandler(unsigned char key, int a, int b)
 			glutFullScreen();
 			glutReshapeWindow(1920, 1080);
 		}
-	isFullscreen = !isFullscreen;
-	scene.camera = camera;
+		isFullscreen = !isFullscreen;
+		break;
+	}
 }
 
 void keyboardUpHandler(unsigned char key, int a, int b) {
@@ -94,6 +96,14 @@ void keyboardUpHandler(unsigned char key, int a, int b) {
 	case 'd':
 		deltaSide = 0.0f;
 		break;
+	case 'i':
+	case 'k':
+		moveUp = 0.0f;
+		break;
+	case 'j':
+	case 'l':
+		moveSide = 0.0f;
+		break;
 	}
 }
 
@@ -105,8 +115,8 @@ void mouseHandler(int x, int y)
 {
 	float xOffset = x - lastX;
 	float yOffset = y - lastY;
-	lastX = x;
-	lastY = y;
+	lastX = (float)x;
+	lastY = (float)y;
 
 	const float sensitivity = 0.1f;
 	xOffset *= sensitivity;
@@ -138,6 +148,12 @@ void Render()
 	}
 	if (deltaSide) {
 		scene.camera.m_CameraPos -= glm::normalize(glm::cross(scene.camera.m_CameraFront, scene.camera.m_CameraUp)) * deltaSide;
+	}
+	if (moveUp) {
+		scene.camera.m_CameraFront.y += moveUp;
+	}
+	if (moveSide) {
+		scene.camera.m_CameraFront.x -= moveSide;
 	}
 	scene.camera.m_CameraPos.y = 1.75f;
 	scene.render();

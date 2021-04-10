@@ -17,6 +17,12 @@ void Scene::render()
 	// Attach to program_id
 	glUseProgram(this->program_id);
 
+	car.rotate(0.05f, glm::vec3(0.0, 1.0, 0.0));
+
+	floor.render(camera.getView(), uniform_mv, uniform_material_ambient, uniform_material_diffuse, uniform_specular, uniform_material_power);
+	car.render(camera.getView(), uniform_mv, uniform_material_ambient, uniform_material_diffuse, uniform_specular, uniform_material_power);
+
+	// Render houses
 	for (int i = 0; i < 8; i++) {
 		house[i].render(camera.getView(), uniform_mv, uniform_material_ambient, uniform_material_diffuse, uniform_specular, uniform_material_power);
 	}
@@ -26,16 +32,31 @@ void Scene::render()
 }
 
 void Scene::init(const char* fragment, const char* vertex, int width, int height) {
-	Object cube = Object("Objects/box.obj", "Textures/house_bricks.bmp");
-	cube.initModel();
-	cube.initTexture();
+	Object base = Object("Objects/box.obj", "Textures/house_bricks.bmp");
+	base.initModel();
+	base.initTexture();
+
+	Object roof = Object("Objects/roof.obj", "Textures/roof_panes.bmp");
+	roof.initModel();
+	roof.initTexture();
+
+	Object car = Object("Objects/car.obj", "Textures/car.bmp");
+	car.initModel();
+	car.initTexture();
+
+	this->car = car;
 
 	for (int i = 0; i < 4; i++) {
-		house[i] = House(cube, cube, glm::vec3(2.0 * i, 0.0, 0.0));
+		house[i] = House(base, roof, car, glm::vec3(2.0 * i, 0.0, 0.0));
 	}
 	for (int i = 4; i < 8; i++) {
-		house[i] = House(cube, cube, glm::vec3(2.0 * (i - 4), 0.0, 4.0));
+		house[i] = House(base, roof, car, glm::vec3(2.0 * (i - 4), 0.0, 4.0));
 	}
+
+	Object floor = Object("Objects/box.obj", "Textures/grass.bmp");
+	floor.initModel();
+	floor.initTexture();
+	this->floor = floor;
 
 	this->light_position = glm::vec3(4.0f, 4.0f, 4.0f);
 	this->initShaders(fragment, vertex);
@@ -45,9 +66,19 @@ void Scene::init(const char* fragment, const char* vertex, int width, int height
 
 void Scene::initCamera(int width, int height) {
 	this->camera = Camera(width, height);
+
 	for (int i = 0; i < 8; i++) {
 		house[i].initMatrices(this->camera.getView());
 	}
+	floor.initMatrices(this->camera.getView());
+	car.initMatrices(this->camera.getView());
+
+	floor.move(glm::vec3(2.5f, 0.0f, 2.5f));
+	floor.scale(glm::vec3(10.0f, 0.01f, 10.f));
+
+	car.move(glm::vec3(2.0, 0.0, 2.0));
+	car.scale(glm::vec3(0.05, 0.05, 0.05));
+	car.rotate(1.6, glm::vec3(0.0, 1.0, 0.0));
 }
 
 void Scene::initBuffers()
@@ -55,6 +86,8 @@ void Scene::initBuffers()
 	for (int i = 0; i < 8; i++) {
 		house[i].initBuffers(program_id);
 	}
+	floor.initBuffers(program_id);
+	car.initBuffers(program_id);
 
 	// Make uniform vars
 	uniform_mv = glGetUniformLocation(program_id, "mv");

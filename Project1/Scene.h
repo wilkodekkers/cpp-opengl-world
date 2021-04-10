@@ -8,7 +8,9 @@
 class Scene
 {
 private:
+	Object floor;
 	House house[8];
+	Object car;
 	glm::vec3 light_position;
 	
 	GLuint program_id;

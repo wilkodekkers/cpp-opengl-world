@@ -7,10 +7,11 @@ class House
 private:
 	Object base;
 	Object roof;
+	Object car;
 	glm::vec3 pos;
 public:
 	House();
-	House(Object base, Object roof, glm::vec3 pos);
+	House(Object base, Object roof, Object car, glm::vec3 pos);
 	~House();
 
 	void initModel();

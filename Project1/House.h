@@ -8,10 +8,11 @@ private:
 	Object base;
 	Object roof;
 	Object car;
+	Object streetLight;
 	glm::vec3 pos;
 public:
 	House();
-	House(Object base, Object roof, Object car, glm::vec3 pos);
+	House(Object base, Object roof, Object car, Object streetLight, glm::vec3 pos);
 	~House();
 
 	void initModel();

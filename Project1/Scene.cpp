@@ -44,13 +44,17 @@ void Scene::init(const char* fragment, const char* vertex, int width, int height
 	car.initModel();
 	car.initTexture();
 
+	Object streetLight = Object("Objects/street_light.obj", "Textures/street_lantern.bmp");
+	streetLight.initModel();
+	streetLight.initTexture();
+
 	this->car = car;
 
 	for (int i = 0; i < 4; i++) {
-		house[i] = House(base, roof, car, glm::vec3(2.0 * i, 0.0, 0.0));
+		house[i] = House(base, roof, car, streetLight, glm::vec3(2.0 * i, 0.0, 0.0));
 	}
 	for (int i = 4; i < 8; i++) {
-		house[i] = House(base, roof, car, glm::vec3(2.0 * (i - 4), 0.0, 4.0));
+		house[i] = House(base, roof, car, streetLight, glm::vec3(2.0 * (i - 4), 0.0, 4.0));
 	}
 
 	Object floor = Object("Objects/box.obj", "Textures/grass.bmp");

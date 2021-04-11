@@ -44,6 +44,17 @@ float moveSide = 0.0f;
 // Keyboard handling
 //--------------------------------------------------------------------------------
 
+void windowChangeHandler() {
+	if (isFullscreen) {
+		glutReshapeWindow(WIDTH, HEIGHT);
+	}
+	else {
+		glutFullScreen();
+		glutReshapeWindow(1920, 1080);
+	}
+	isFullscreen = !isFullscreen;
+}
+
 void keyboardHandler(unsigned char key, int a, int b)
 {
 	switch (key) {
@@ -75,10 +86,7 @@ void keyboardHandler(unsigned char key, int a, int b)
 		moveSide = -0.01f;
 		break;
 	case 'v':
-		if (scene.cameraMode == 0)
-			scene.cameraMode = 1;
-		else
-			scene.cameraMode = 0;
+		scene.switchCamera();
 		break;
 	case 'q':
 		deltaVertical = -0.1f;
@@ -87,14 +95,7 @@ void keyboardHandler(unsigned char key, int a, int b)
 		deltaVertical = 0.1f;
 		break;
 	case 'f':
-		if (isFullscreen) {
-			glutReshapeWindow(WIDTH, HEIGHT);
-		}
-		else {
-			glutFullScreen();
-			glutReshapeWindow(1920, 1080);
-		}
-		isFullscreen = !isFullscreen;
+		windowChangeHandler();
 		break;
 	}
 }

@@ -127,3 +127,11 @@ void Scene::initShaders(const char* fragment, const char* vertex)
 
 	program_id = glsl::makeShaderProgram(vsh_id, fsh_id);
 }
+
+void Scene::switchCamera()
+{
+	if (cameraMode == 0)
+		cameraMode = 1;
+	else
+		cameraMode = 0;
+}

@@ -34,5 +34,6 @@ public:
 	void initCamera(int width, int height);
 	void initBuffers();
 	void initShaders(const char* fragment, const char* vertex);
+	void switchCamera();
 };
 

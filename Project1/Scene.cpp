@@ -1,6 +1,8 @@
 #include "Scene.h"
 
-Scene::Scene() {
+Scene::Scene() 
+{
+	// Init scene variables to remove warnings
 	program_id = GLuint();
 	uniform_mv = GLuint();
 	uniform_material_ambient = GLuint();
@@ -39,25 +41,32 @@ void Scene::render()
 	glutSwapBuffers();
 }
 
-void Scene::init(const char* fragment, const char* vertex, int width, int height) {
+void Scene::init(const char* fragment, const char* vertex, int width, int height)
+{
+	// Init base model
 	Object base = Object("Objects/box.obj", "Textures/house_bricks.bmp", glm::vec3(1.0f, 1.0f, 1.0f));
 	base.initModel();
 	base.initTexture();
 
+	// Init roof model
 	Object roof = Object("Objects/roof.obj", "Textures/roof_panes.bmp", glm::vec3(1.0f, 1.0f, 1.0f));
 	roof.initModel();
 	roof.initTexture();
 
+	// Init car model
 	Object car = Object("Objects/car.obj", "Textures/car.bmp", glm::vec3(1.0f, 1.0f, 1.0f));
 	car.initModel();
 	car.initTexture();
 
+	// Init street light model
 	Object streetLight = Object("Objects/street_light.obj", "Textures/street_lantern.bmp", glm::vec3(1.0f, 1.0f, 1.0f));
 	streetLight.initModel();
 	streetLight.initTexture();
 
+	// Set car variable
 	this->car = car;
 
+	// Fill house array
 	for (int i = 0; i < 4; i++) {
 		house[i] = House(base, roof, car, streetLight, glm::vec3(2.0 * i, 0.0, 0.0));
 	}
@@ -65,41 +74,53 @@ void Scene::init(const char* fragment, const char* vertex, int width, int height
 		house[i] = House(base, roof, car, streetLight, glm::vec3(2.0 * (i - 4), 0.0, 4.0));
 	}
 
+	// Init floor model
 	Object floor = Object("Objects/box.obj", "Textures/grass.bmp", glm::vec3(100.0f, 1.0f, 1.0f));
 	floor.initModel();
 	floor.initTexture();
 	this->floor = floor;
 
+	// Init sign model
 	Object sign = Object("Objects/sign.obj", "Textures/sign.bmp", glm::vec3(100.0f, 100.0f, 100.0f));
 	sign.initModel();
 	sign.initTexture();
 	this->sign = sign;
 
+	// Init light position
 	this->light_position = glm::vec3(4.0f, 4.0f, 4.0f);
+
+	// Init other scene methods
 	this->initShaders(fragment, vertex);
 	this->initCamera(width, height);
 	this->initBuffers();
 }
 
-void Scene::initCamera(int width, int height) {
+void Scene::initCamera(int width, int height)
+{
+	// Set camera variables
 	this->camera = Camera(width, height);
 	this->drone = Camera(width, height, glm::vec3(0.0f, 10.0f, 5.0f), glm::vec3(0.0f, -2.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
+	// Set house matrices
 	for (int i = 0; i < 8; i++) {
 		house[i].initMatrices(this->camera.getView());
 	}
 
+	// Set other scene matrices
 	floor.initMatrices(this->camera.getView());
 	car.initMatrices(this->camera.getView());
 	sign.initMatrices(this->camera.getView());
 
+	// Move the floor and scale it correctly
 	floor.move(glm::vec3(2.5f, 0.0f, 2.5f));
 	floor.scale(glm::vec3(10.0f, 0.01f, 10.f));
 
+	// Move the car and scale it correctly
 	car.move(glm::vec3(2.0, 0.0, 2.0));
 	car.scale(glm::vec3(0.05, 0.05, 0.05));
 	car.rotate(1.6, glm::vec3(0.0, 1.0, 0.0));
 
+	// Move the sign and scale it correctly
 	sign.move(glm::vec3(-2.0f, 0.0f, 3.0f));
 	sign.scale(glm::vec3(0.1f, 0.1f, 0.1f));
 	sign.rotate(1.6, glm::vec3(0.0f, 1.0f, 0.0f));

@@ -23,7 +23,6 @@ unsigned const int DELTA_TIME = 10;
 // Variables
 //--------------------------------------------------------------------------------
 
-// Scene
 Scene scene;
 
 bool isFullscreen = false;
@@ -126,7 +125,7 @@ void keyboardUpHandler(unsigned char key, int a, int b) {
 }
 
 //--------------------------------------------------------------------------------
-// Keyboard handling
+// Mouse handling
 //--------------------------------------------------------------------------------
 
 void mouseHandler(int x, int y)
@@ -241,6 +240,10 @@ void InitGlutGlew(int argc, char** argv)
 	glewInit();
 }
 
+//------------------------------------------------------------
+// void InitScene()
+// Initializes the main scene
+//------------------------------------------------------------
 void InitScene()
 {
 	scene = Scene();

@@ -2,6 +2,7 @@
 
 Object::Object()
 {
+	// Initialize object variables
 	this->normals = vector<glm::vec3>();
 	this->vertices = vector<glm::vec3>();
 	this->uvs = vector<glm::vec2>();
@@ -14,6 +15,7 @@ Object::Object()
 
 Object::Object(const char* modelPath, const char* texturePath, glm::vec3 specular)
 {
+	// Initialize object variables with custom values
 	this->normals = vector<glm::vec3>();
 	this->vertices = vector<glm::vec3>();
 	this->uvs = vector<glm::vec2>();
@@ -28,6 +30,7 @@ Object::Object(const char* modelPath, const char* texturePath, glm::vec3 specula
 
 Object::Object(const char* modelPath, const char* texturePath, Mesh mesh)
 {
+	// Initialize object variables with custom mesh
 	this->modelPath = modelPath;
 	this->texturePath = texturePath;
 	this->mesh = mesh;
@@ -35,26 +38,31 @@ Object::Object(const char* modelPath, const char* texturePath, Mesh mesh)
 
 void Object::move(glm::vec3 pos)
 {
+	// Move the object
 	this->model = glm::translate(this->model, pos);
 }
 
 void Object::rotate(float radians, glm::vec3 angles)
 {
+	// Rotate the object
 	model = glm::rotate(model, radians, angles);
 }
 
 void Object::scale(glm::vec3 scales)
 {
+	// Scale the model
 	model = glm::scale(model, scales);
 }
 
 void Object::initModel()
 {
+	// Init the model
 	loadOBJ(this->modelPath, this->vertices, this->uvs, this->normals);
 }
 
 void Object::initTexture()
 {
+	// Init the texture base on the extension (only works for bmp and dds)
 	if (strstr(this->texturePath, ".bmp")) {
 		this->texture_id = loadBMP(this->texturePath);
 	}
@@ -65,6 +73,7 @@ void Object::initTexture()
 
 void Object::initShaders(const char* fragment, const char* vertex, GLuint program_id)
 {
+	// Init the shader
 	char* vertexshader = glsl::readFile(vertex);
 	GLuint vsh_id = glsl::makeVertexShader(vertexshader);
 
@@ -129,6 +138,7 @@ void Object::initBuffers(GLuint program_id)
 
 void Object::initMatrices(glm::mat4 view)
 {
+	// Init the matrices
 	this->model = glm::mat4();
 	this->mv = view * this->model;
 }

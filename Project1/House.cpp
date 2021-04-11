@@ -65,6 +65,15 @@ void House::initMatrices(glm::mat4 view)
 
 void House::render(glm::mat4 view, GLuint uniform_mv, GLuint uniform_material_ambient, GLuint uniform_material_diffuse, GLuint uniform_specular, GLuint uniform_material_power)
 {
+	if (pos.y < 1) {
+		pos.y += 0.001f;
+		roof.move(glm::vec3(0.001f, 0.001f, 0.0f));
+	}
+	else {
+		pos.y = 0.0f;
+		roof.move(glm::vec3(-1.0f, -1.0f, 0.0f));
+	}
+
 	base.render(view, uniform_mv, uniform_material_ambient, uniform_material_diffuse, uniform_specular, uniform_material_power);
 	roof.render(view, uniform_mv, uniform_material_ambient, uniform_material_diffuse, uniform_specular, uniform_material_power);
 	car.render(view, uniform_mv, uniform_material_ambient, uniform_material_diffuse, uniform_specular, uniform_material_power);

@@ -27,6 +27,7 @@ unsigned const int DELTA_TIME = 10;
 Scene scene;
 
 bool isFullscreen = false;
+bool isInDroneMode = false;
 
 float lastX = 1200;
 float lastY = 300;
@@ -35,6 +36,7 @@ float yaw = 0.0f;
 
 float deltaForward = 0.0f;
 float deltaSide = 0.0f;
+float deltaVertical = 0.0f;
 
 float moveUp = 0.0f;
 float moveSide = 0.0f;
@@ -73,6 +75,15 @@ void keyboardHandler(unsigned char key, int a, int b)
 	case 'l':
 		moveSide = -0.01f;
 		break;
+	case 'v':
+		isInDroneMode = !isInDroneMode;
+		break;
+	case 'q':
+		deltaVertical = -0.1f;
+		break;
+	case 'e':
+		deltaVertical = 0.1f;
+		break;
 	case 'f':
 		if (isFullscreen) {
 			glutReshapeWindow(WIDTH, HEIGHT);
@@ -103,6 +114,10 @@ void keyboardUpHandler(unsigned char key, int a, int b) {
 	case 'j':
 	case 'l':
 		moveSide = 0.0f;
+		break;
+	case 'q':
+	case 'e':
+		deltaVertical = 0.0f;
 		break;
 	}
 }
@@ -149,13 +164,18 @@ void Render()
 	if (deltaSide) {
 		scene.camera.m_CameraPos -= glm::normalize(glm::cross(scene.camera.m_CameraFront, scene.camera.m_CameraUp)) * deltaSide;
 	}
+	if (deltaVertical && isInDroneMode) {
+		scene.camera.m_CameraPos.y += deltaVertical;
+	}
 	if (moveUp) {
 		scene.camera.m_CameraFront.y += moveUp;
 	}
 	if (moveSide) {
 		scene.camera.m_CameraFront.x -= moveSide;
 	}
-	scene.camera.m_CameraPos.y = 1.75f;
+	if (!isInDroneMode) {
+		scene.camera.m_CameraPos.y = 1.75f;
+	}
 	scene.render();
 }
 

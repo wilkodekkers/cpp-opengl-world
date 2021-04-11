@@ -17,7 +17,8 @@ void Scene::render()
 	// Attach to program_id
 	glUseProgram(this->program_id);
 
-	car.rotate(0.05f, glm::vec3(0.0, 1.0, 0.0));
+	car.rotate(0.03f, glm::vec3(0.0f, 1.0f, 0.0f));
+	sign.rotate(0.01f, glm::vec3(1.0f, 0.0f, 0.0f));
 
 	Camera camera;
 	if (cameraMode == 0)
@@ -26,6 +27,7 @@ void Scene::render()
 		camera = this->drone;
 
 	floor.render(camera.getView(), uniform_mv, uniform_material_ambient, uniform_material_diffuse, uniform_specular, uniform_material_power);
+	sign.render(camera.getView(), uniform_mv, uniform_material_ambient, uniform_material_diffuse, uniform_specular, uniform_material_power);
 	car.render(camera.getView(), uniform_mv, uniform_material_ambient, uniform_material_diffuse, uniform_specular, uniform_material_power);
 
 	// Render houses
@@ -38,19 +40,19 @@ void Scene::render()
 }
 
 void Scene::init(const char* fragment, const char* vertex, int width, int height) {
-	Object base = Object("Objects/box.obj", "Textures/house_bricks.bmp");
+	Object base = Object("Objects/box.obj", "Textures/house_bricks.bmp", glm::vec3(1.0f, 1.0f, 1.0f));
 	base.initModel();
 	base.initTexture();
 
-	Object roof = Object("Objects/roof.obj", "Textures/roof_panes.bmp");
+	Object roof = Object("Objects/roof.obj", "Textures/roof_panes.bmp", glm::vec3(1.0f, 1.0f, 1.0f));
 	roof.initModel();
 	roof.initTexture();
 
-	Object car = Object("Objects/car.obj", "Textures/car.bmp");
+	Object car = Object("Objects/car.obj", "Textures/car.bmp", glm::vec3(1.0f, 1.0f, 1.0f));
 	car.initModel();
 	car.initTexture();
 
-	Object streetLight = Object("Objects/street_light.obj", "Textures/street_lantern.bmp");
+	Object streetLight = Object("Objects/street_light.obj", "Textures/street_lantern.bmp", glm::vec3(1.0f, 1.0f, 1.0f));
 	streetLight.initModel();
 	streetLight.initTexture();
 
@@ -63,10 +65,15 @@ void Scene::init(const char* fragment, const char* vertex, int width, int height
 		house[i] = House(base, roof, car, streetLight, glm::vec3(2.0 * (i - 4), 0.0, 4.0));
 	}
 
-	Object floor = Object("Objects/box.obj", "Textures/grass.bmp");
+	Object floor = Object("Objects/box.obj", "Textures/grass.bmp", glm::vec3(100.0f, 1.0f, 1.0f));
 	floor.initModel();
 	floor.initTexture();
 	this->floor = floor;
+
+	Object sign = Object("Objects/sign.obj", "Textures/sign.bmp", glm::vec3(100.0f, 100.0f, 100.0f));
+	sign.initModel();
+	sign.initTexture();
+	this->sign = sign;
 
 	this->light_position = glm::vec3(4.0f, 4.0f, 4.0f);
 	this->initShaders(fragment, vertex);
@@ -76,13 +83,15 @@ void Scene::init(const char* fragment, const char* vertex, int width, int height
 
 void Scene::initCamera(int width, int height) {
 	this->camera = Camera(width, height);
-	this->drone = Camera(width, height);
+	this->drone = Camera(width, height, glm::vec3(0.0f, 10.0f, 5.0f), glm::vec3(0.0f, -2.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 	for (int i = 0; i < 8; i++) {
 		house[i].initMatrices(this->camera.getView());
 	}
+
 	floor.initMatrices(this->camera.getView());
 	car.initMatrices(this->camera.getView());
+	sign.initMatrices(this->camera.getView());
 
 	floor.move(glm::vec3(2.5f, 0.0f, 2.5f));
 	floor.scale(glm::vec3(10.0f, 0.01f, 10.f));
@@ -90,6 +99,10 @@ void Scene::initCamera(int width, int height) {
 	car.move(glm::vec3(2.0, 0.0, 2.0));
 	car.scale(glm::vec3(0.05, 0.05, 0.05));
 	car.rotate(1.6, glm::vec3(0.0, 1.0, 0.0));
+
+	sign.move(glm::vec3(-2.0f, 0.0f, 3.0f));
+	sign.scale(glm::vec3(0.1f, 0.1f, 0.1f));
+	sign.rotate(1.6, glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 void Scene::initBuffers()
@@ -99,6 +112,7 @@ void Scene::initBuffers()
 	}
 	floor.initBuffers(program_id);
 	car.initBuffers(program_id);
+	sign.initBuffers(program_id);
 
 	// Make uniform vars
 	uniform_mv = glGetUniformLocation(program_id, "mv");
@@ -126,6 +140,8 @@ void Scene::initShaders(const char* fragment, const char* vertex)
 	GLuint fsh_id = glsl::makeFragmentShader(fragshader);
 
 	program_id = glsl::makeShaderProgram(vsh_id, fsh_id);
+
+	car.initShaders(fragment, vertex, program_id);
 }
 
 void Scene::switchCamera()

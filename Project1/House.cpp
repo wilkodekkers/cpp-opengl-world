@@ -5,7 +5,7 @@ House::House()
 	pos = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
-House::House(Object base, Object roof, Object car, Object streetLight, glm::vec3 pos)
+House::House(Object base, Object roof, Object car, Object streetLight,  glm::vec3 pos)
 {
 	this->base = base;
 	this->roof = roof;

@@ -157,7 +157,7 @@ void mouseHandler(int x, int y)
 		cam = scene.camera;
 	else
 		cam = scene.drone;
-	cam.m_CameraFront = glm::normalize(direction);
+	cam.front = glm::normalize(direction);
 	if (scene.cameraMode == 0)
 		scene.camera = cam;
 	else
@@ -177,22 +177,22 @@ void Render()
 		cam = scene.drone;
 
 	if (deltaForward) {
-		cam.m_CameraPos += deltaForward * cam.m_CameraFront;
+		cam.position += deltaForward * cam.front;
 	}
 	if (deltaSide) {
-		cam.m_CameraPos -= glm::normalize(glm::cross(cam.m_CameraFront, cam.m_CameraUp)) * deltaSide;
+		cam.position -= glm::normalize(glm::cross(cam.front, cam.up)) * deltaSide;
 	}
 	if (deltaVertical && scene.cameraMode == 1) {
-		cam.m_CameraPos.y += deltaVertical;
+		cam.position.y += deltaVertical;
 	}
 	if (moveUp) {
-		cam.m_CameraFront.y += moveUp;
+		cam.front.y += moveUp;
 	}
 	if (moveSide) {
-		cam.m_CameraFront.x -= moveSide;
+		cam.front.x -= moveSide;
 	}
 	if (scene.cameraMode == 0) {
-		cam.m_CameraPos.y = 1.75f;
+		cam.position.y = 1.75f;
 	}
 	
 	if (scene.cameraMode == 0)

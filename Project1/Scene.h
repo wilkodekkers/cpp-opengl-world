@@ -8,6 +8,7 @@
 class Scene
 {
 private:
+	Object sign;
 	Object floor;
 	House house[8];
 	Object car;

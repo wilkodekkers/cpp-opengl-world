@@ -12,7 +12,7 @@ Object::Object()
 		1024);
 }
 
-Object::Object(const char* modelPath, const char* texturePath)
+Object::Object(const char* modelPath, const char* texturePath, glm::vec3 specular)
 {
 	this->normals = vector<glm::vec3>();
 	this->vertices = vector<glm::vec3>();
@@ -20,7 +20,7 @@ Object::Object(const char* modelPath, const char* texturePath)
 	this->mesh = Mesh(
 		glm::vec3(0.0f, 0.0f, 0.0f), // Ambient
 		glm::vec3(0.5f, 0.5f, 0.3f), // Diffuse
-		glm::vec3(1.0f, 1.0f, 1.0f), // Specular
+		specular, // Specular
 		1024);
 	this->modelPath = modelPath;
 	this->texturePath = texturePath;
@@ -61,6 +61,17 @@ void Object::initTexture()
 	else {
 		this->texture_id = loadDDS(this->texturePath);
 	}
+}
+
+void Object::initShaders(const char* fragment, const char* vertex, GLuint program_id)
+{
+	char* vertexshader = glsl::readFile(vertex);
+	GLuint vsh_id = glsl::makeVertexShader(vertexshader);
+
+	char* fragshader = glsl::readFile(fragment);
+	GLuint fsh_id = glsl::makeFragmentShader(fragshader);
+
+	program_id = glsl::makeShaderProgram(vsh_id, fsh_id);
 }
 
 void Object::initBuffers(GLuint program_id)

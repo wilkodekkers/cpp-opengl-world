@@ -39,7 +39,7 @@ public:
 	const char* texturePath;
 
 	Object();
-	Object(const char* modelPath, const char* texturePath);
+	Object(const char* modelPath, const char* texturePath, glm::vec3 specular);
 	Object(const char* modelPath, const char* texturePath, Mesh mesh);
 
 	void move(glm::vec3 pos);
@@ -48,6 +48,7 @@ public:
 
 	void initModel();
 	void initTexture();
+	void initShaders(const char* fragment, const char* vertex, GLuint program_id);
 	void initBuffers(GLuint program_id);
 	void initMatrices(glm::mat4 view);
 	void render(glm::mat4 view, GLuint uniform_mv, GLuint uniform_material_ambient, GLuint uniform_material_diffuse, GLuint uniform_specular, GLuint uniform_material_power);

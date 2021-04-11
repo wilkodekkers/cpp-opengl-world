@@ -19,6 +19,12 @@ void Scene::render()
 
 	car.rotate(0.05f, glm::vec3(0.0, 1.0, 0.0));
 
+	Camera camera;
+	if (cameraMode == 0)
+		camera = this->camera;
+	else
+		camera = this->drone;
+
 	floor.render(camera.getView(), uniform_mv, uniform_material_ambient, uniform_material_diffuse, uniform_specular, uniform_material_power);
 	car.render(camera.getView(), uniform_mv, uniform_material_ambient, uniform_material_diffuse, uniform_specular, uniform_material_power);
 
@@ -70,6 +76,7 @@ void Scene::init(const char* fragment, const char* vertex, int width, int height
 
 void Scene::initCamera(int width, int height) {
 	this->camera = Camera(width, height);
+	this->drone = Camera(width, height);
 
 	for (int i = 0; i < 8; i++) {
 		house[i].initMatrices(this->camera.getView());

@@ -27,7 +27,6 @@ unsigned const int DELTA_TIME = 10;
 Scene scene;
 
 bool isFullscreen = false;
-bool isInDroneMode = false;
 
 float lastX = 1200;
 float lastY = 300;
@@ -76,7 +75,10 @@ void keyboardHandler(unsigned char key, int a, int b)
 		moveSide = -0.01f;
 		break;
 	case 'v':
-		isInDroneMode = !isInDroneMode;
+		if (scene.cameraMode == 0)
+			scene.cameraMode = 1;
+		else
+			scene.cameraMode = 0;
 		break;
 	case 'q':
 		deltaVertical = -0.1f;
@@ -149,7 +151,16 @@ void mouseHandler(int x, int y)
 	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
 	direction.y = sin(glm::radians(pitch));
 	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-	scene.camera.m_CameraFront = glm::normalize(direction);
+	Camera cam;
+	if (scene.cameraMode == 0)
+		cam = scene.camera;
+	else
+		cam = scene.drone;
+	cam.m_CameraFront = glm::normalize(direction);
+	if (scene.cameraMode == 0)
+		scene.camera = cam;
+	else
+		scene.drone = cam;
 }
 
 //--------------------------------------------------------------------------------
@@ -158,24 +169,35 @@ void mouseHandler(int x, int y)
 
 void Render()
 {
+	Camera cam;
+	if (scene.cameraMode == 0)
+		cam = scene.camera;
+	else
+		cam = scene.drone;
+
 	if (deltaForward) {
-		scene.camera.m_CameraPos += deltaForward * scene.camera.m_CameraFront;
+		cam.m_CameraPos += deltaForward * cam.m_CameraFront;
 	}
 	if (deltaSide) {
-		scene.camera.m_CameraPos -= glm::normalize(glm::cross(scene.camera.m_CameraFront, scene.camera.m_CameraUp)) * deltaSide;
+		cam.m_CameraPos -= glm::normalize(glm::cross(cam.m_CameraFront, cam.m_CameraUp)) * deltaSide;
 	}
-	if (deltaVertical && isInDroneMode) {
-		scene.camera.m_CameraPos.y += deltaVertical;
+	if (deltaVertical && scene.cameraMode == 1) {
+		cam.m_CameraPos.y += deltaVertical;
 	}
 	if (moveUp) {
-		scene.camera.m_CameraFront.y += moveUp;
+		cam.m_CameraFront.y += moveUp;
 	}
 	if (moveSide) {
-		scene.camera.m_CameraFront.x -= moveSide;
+		cam.m_CameraFront.x -= moveSide;
 	}
-	if (!isInDroneMode) {
-		scene.camera.m_CameraPos.y = 1.75f;
+	if (scene.cameraMode == 0) {
+		cam.m_CameraPos.y = 1.75f;
 	}
+	
+	if (scene.cameraMode == 0)
+		scene.camera = cam;
+	else
+		scene.drone = cam;
 	scene.render();
 }
 

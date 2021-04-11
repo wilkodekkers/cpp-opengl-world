@@ -20,9 +20,13 @@ private:
 	GLuint uniform_specular;
 	GLuint uniform_material_power;
 
+	
 	float cameraSpeed = 0.05f;
+	
 public:
 	Camera camera;
+	Camera drone;
+	int cameraMode = 0;
 
 	Scene();
 	void render();

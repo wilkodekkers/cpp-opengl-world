@@ -1,15 +1,15 @@
 #pragma once
 #include <GL/glew.h>
 #include "Object.h"
-#include "House.h"
+#include "house.h"
 #include "camera.h"
 
 class scene
 {
-	Object sign_;
-	Object floor_;
-	House house_[8];
-	Object car_;
+	object sign_;
+	object floor_;
+	house house_[8];
+	object car_;
 	glm::vec3 light_position_;
 	
 	GLuint program_id_;

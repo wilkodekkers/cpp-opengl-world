@@ -1,18 +1,12 @@
 #pragma once
-#include <iostream>
 #include <vector>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
 #include "glsl.h"
-#include "objloader.h"
-#include "texture.h"
-#include "Mesh.h"
+#include "mesh.h"
 
 using namespace std;
 
-class Object
+class object
 {
 public:
 	vector<glm::vec3> normals;
@@ -33,24 +27,24 @@ public:
 	GLuint vbo_normals;
 	GLuint vbo_uvs;
 
-	Mesh mesh;
+	mesh m_mesh;
 
-	const char* modelPath;
-	const char* texturePath;
+	const char* model_path;
+	const char* texture_path;
 
-	Object();
-	Object(const char* modelPath, const char* texturePath, glm::vec3 specular);
-	Object(const char* modelPath, const char* texturePath, Mesh mesh);
+	object();
+	object(const char* model_path, const char* texture_path, glm::vec3 specular);
+	object(const char* model_path, const char* texture_path, mesh m_mesh);
 
 	void move(glm::vec3 pos);
 	void rotate(float radians, glm::vec3 angles);
 	void scale(glm::vec3 scales);
 
-	void initModel();
-	void initTexture();
-	void initShaders(const char* fragment, const char* vertex, GLuint program_id);
-	void initBuffers(GLuint program_id);
-	void initMatrices(glm::mat4 view);
+	void init_model();
+	void init_texture();
+	void init_shaders(const char* fragment, const char* vertex, GLuint program_id);
+	void init_buffers(GLuint program_id);
+	void init_matrices(glm::mat4 view);
 	void render(glm::mat4 view, GLuint uniform_mv, GLuint uniform_material_ambient, GLuint uniform_material_diffuse, GLuint uniform_specular, GLuint uniform_material_power);
 };
 

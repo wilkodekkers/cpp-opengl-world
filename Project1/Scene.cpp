@@ -50,46 +50,46 @@ void scene::render()
 void scene::init(const char* fragment, const char* vertex, int width, int height)
 {
 	// Init base model
-	auto base = Object("Objects/box.obj", "Textures/house_bricks.bmp", glm::vec3(1.0f, 1.0f, 1.0f));
-	base.initModel();
-	base.initTexture();
+	auto base = object("Objects/box.obj", "Textures/house_bricks.bmp", glm::vec3(1.0f, 1.0f, 1.0f));
+	base.init_model();
+	base.init_texture();
 
 	// Init roof model
-	auto roof = Object("Objects/roof.obj", "Textures/roof_panes.bmp", glm::vec3(1.0f, 1.0f, 1.0f));
-	roof.initModel();
-	roof.initTexture();
+	auto roof = object("Objects/roof.obj", "Textures/roof_panes.bmp", glm::vec3(1.0f, 1.0f, 1.0f));
+	roof.init_model();
+	roof.init_texture();
 
 	// Init car model
-	auto car = Object("Objects/car.obj", "Textures/car.bmp", glm::vec3(1.0f, 1.0f, 1.0f));
-	car.initModel();
-	car.initTexture();
+	auto car = object("Objects/car.obj", "Textures/car.bmp", glm::vec3(1.0f, 1.0f, 1.0f));
+	car.init_model();
+	car.init_texture();
 
 	// Init street light model
-	auto streetLight = Object("Objects/street_light.obj", "Textures/street_lantern.bmp", glm::vec3(1.0f, 1.0f, 1.0f));
-	streetLight.initModel();
-	streetLight.initTexture();
+	auto streetLight = object("Objects/street_light.obj", "Textures/street_lantern.bmp", glm::vec3(1.0f, 1.0f, 1.0f));
+	streetLight.init_model();
+	streetLight.init_texture();
 
 	// Set car variable
 	this->car_ = car;
 
 	// Fill house array
 	for (int i = 0; i < 4; i++) {
-		house_[i] = House(base, roof, car, streetLight, glm::vec3(2.0 * i, 0.0, 0.0));
+		house_[i] = house(base, roof, car, streetLight, glm::vec3(2.0 * i, 0.0, 0.0));
 	}
 	for (int i = 4; i < 8; i++) {
-		house_[i] = House(base, roof, car, streetLight, glm::vec3(2.0 * (i - 4), 0.0, 4.0));
+		house_[i] = house(base, roof, car, streetLight, glm::vec3(2.0 * (i - 4), 0.0, 4.0));
 	}
 
 	// Init floor model
-	auto floor = Object("Objects/box.obj", "Textures/grass.bmp", glm::vec3(100.0f, 1.0f, 1.0f));
-	floor.initModel();
-	floor.initTexture();
+	auto floor = object("Objects/box.obj", "Textures/grass.bmp", glm::vec3(100.0f, 1.0f, 1.0f));
+	floor.init_model();
+	floor.init_texture();
 	this->floor_ = floor;
 
 	// Init sign model
-	auto sign = Object("Objects/sign.obj", "Textures/sign.bmp", glm::vec3(100.0f, 100.0f, 100.0f));
-	sign.initModel();
-	sign.initTexture();
+	auto sign = object("Objects/sign.obj", "Textures/sign.bmp", glm::vec3(100.0f, 100.0f, 100.0f));
+	sign.init_model();
+	sign.init_texture();
 	this->sign_ = sign;
 
 	// Init light position
@@ -109,13 +109,13 @@ void scene::init_camera(int width, int height)
 
 	// Set house matrices
 	for (int i = 0; i < 8; i++) {
-		house_[i].initMatrices(this->m_camera.get_view());
+		house_[i].init_matrices(this->m_camera.get_view());
 	}
 
 	// Set other scene matrices
-	floor_.initMatrices(this->m_camera.get_view());
-	car_.initMatrices(this->m_camera.get_view());
-	sign_.initMatrices(this->m_camera.get_view());
+	floor_.init_matrices(this->m_camera.get_view());
+	car_.init_matrices(this->m_camera.get_view());
+	sign_.init_matrices(this->m_camera.get_view());
 
 	// Move the floor and scale it correctly
 	floor_.move(glm::vec3(2.5f, 0.0f, 2.5f));
@@ -135,11 +135,11 @@ void scene::init_camera(int width, int height)
 void scene::init_buffers()
 {
 	for (int i = 0; i < 8; i++) {
-		house_[i].initBuffers(program_id_);
+		house_[i].init_buffers(program_id_);
 	}
-	floor_.initBuffers(program_id_);
-	car_.initBuffers(program_id_);
-	sign_.initBuffers(program_id_);
+	floor_.init_buffers(program_id_);
+	car_.init_buffers(program_id_);
+	sign_.init_buffers(program_id_);
 
 	// Make uniform vars
 	uniform_mv_ = glGetUniformLocation(program_id_, "mv");
@@ -168,7 +168,7 @@ void scene::init_shaders(const char* fragment, const char* vertex)
 
 	program_id_ = glsl::make_shader_program(vsh_id, fsh_id);
 
-	car_.initShaders(fragment, vertex, program_id_);
+	car_.init_shaders(fragment, vertex, program_id_);
 }
 
 void scene::switch_camera()

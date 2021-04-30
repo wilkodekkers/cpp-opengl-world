@@ -1,6 +1,6 @@
 #include "Mesh.h"
 
-Mesh::Mesh()
+mesh::mesh()
 {
 	// Initialize mesh variables
 	this->ambient_color = glm::vec3();
@@ -9,7 +9,7 @@ Mesh::Mesh()
 	this->power = 0;
 }
 
-Mesh::Mesh(glm::vec3 ambient_color, glm::vec3 diffuse_color, glm::vec3 specular_color, float power)
+mesh::mesh(const glm::vec3 ambient_color, const glm::vec3 diffuse_color, const glm::vec3 specular_color, const float power)
 {
 	// Initialize mesh variables with custom values
 	this->ambient_color = ambient_color;
@@ -18,7 +18,7 @@ Mesh::Mesh(glm::vec3 ambient_color, glm::vec3 diffuse_color, glm::vec3 specular_
 	this->power = power;
 }
 
-void Mesh::fillUniformVars(GLuint uniform_material_ambient, GLuint uniform_material_diffuse, GLuint uniform_specular, GLuint uniform_material_power)
+void mesh::fill_uniform_vars(const GLuint uniform_material_ambient, const GLuint uniform_material_diffuse, const GLuint uniform_specular, const GLuint uniform_material_power)
 {
 	// Fill uniform vars for mesh
 	glUniform3fv(uniform_material_ambient, 1, glm::value_ptr(this->ambient_color));

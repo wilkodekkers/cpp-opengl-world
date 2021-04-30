@@ -1,21 +1,18 @@
 #pragma once
-#include <GL/glew.h>
 #include <glm/glm.hpp>
 
-class Camera
+class camera
 {
-private:
-	glm::mat4 view;
-	glm::mat4 projection;
+	glm::mat4 view_;
+	glm::mat4 projection_;
 public:
 	glm::vec3 position;
 	glm::vec3 front;
 	glm::vec3 up;
 
-	Camera();
-	Camera(int width, int height);
-	Camera(int width, int height, glm::vec3 position, glm::vec3 front, glm::vec3 up);
-	glm::mat4 getView();
-	glm::mat4 getProjection();
+	camera();
+	camera(int width, int height);
+	camera(int width, int height, glm::vec3 position, glm::vec3 front, glm::vec3 up);
+	glm::mat4 get_view() const;
+	glm::mat4 get_projection() const;
 };
-

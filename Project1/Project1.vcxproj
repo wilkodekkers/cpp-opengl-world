@@ -128,24 +128,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="glsl.cpp" />
     <ClCompile Include="House.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="objloader.cpp" />
-    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="scene.cpp" />
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
+    <ClInclude Include="camera.h" />
     <ClInclude Include="glsl.h" />
     <ClInclude Include="House.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="objloader.h" />
-    <ClInclude Include="Scene.h" />
+    <ClInclude Include="scene.h" />
     <ClInclude Include="texture.h" />
   </ItemGroup>
   <ItemGroup>

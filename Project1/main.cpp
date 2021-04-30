@@ -1,8 +1,9 @@
 #include <iostream>
 
 #include <GL/glew.h>
+#include <GL/glut.h>
 
-#include "Scene.h"
+#include "scene.h"
 
 using namespace std;
 
@@ -11,116 +12,118 @@ using namespace std;
 // Consts
 //--------------------------------------------------------------------------------
 
-const int WIDTH = 1000, HEIGHT = 625;
+const int width = 1000, height = 625;
 
 const char* fragshader_name = "fragmentshader.frag";
 const char* vertexshader_name = "vertexshader.vert";
 
-unsigned const int DELTA_TIME = 10;
+unsigned const int delta_time = 10;
 
 
 //--------------------------------------------------------------------------------
 // Variables
 //--------------------------------------------------------------------------------
 
-Scene scene;
+scene m_scene;
 
-bool isFullscreen = false;
+bool is_fullscreen = false;
 
-float lastX = 1200;
-float lastY = 300;
+float last_x = 1200;
+float last_y = 300;
 float pitch = 0.0f;
 float yaw = 0.0f;
 
-float deltaForward = 0.0f;
-float deltaSide = 0.0f;
-float deltaVertical = 0.0f;
+float delta_forward = 0.0f;
+float delta_side = 0.0f;
+float delta_vertical = 0.0f;
 
-float moveUp = 0.0f;
-float moveSide = 0.0f;
+float move_up = 0.0f;
+float move_side = 0.0f;
 
 //--------------------------------------------------------------------------------
 // Keyboard handling
 //--------------------------------------------------------------------------------
 
-void windowChangeHandler() {
-	if (isFullscreen) {
-		glutReshapeWindow(WIDTH, HEIGHT);
+void window_change_handler() {
+	if (is_fullscreen) {
+		glutReshapeWindow(width, height);
 	}
 	else {
 		glutFullScreen();
 		glutReshapeWindow(1920, 1080);
 	}
-	isFullscreen = !isFullscreen;
+	is_fullscreen = !is_fullscreen;
 }
 
-void keyboardHandler(unsigned char key, int a, int b)
+void keyboard_handler(const unsigned char key, int a, int b)
 {
 	switch (key) {
 	case 27:
-		glutExit();
+		glutDestroyWindow(glutGetWindow());
 		break;
 	case 'w':
-		deltaForward = 0.1f;
+		delta_forward = 0.1f;
 		break;
 	case 's':
-		deltaForward = -0.1f;
+		delta_forward = -0.1f;
 		break;
 	case 'a':
-		deltaSide = 0.1f;
+		delta_side = 0.1f;
 		break;
 	case 'd':
-		deltaSide = -0.1f;
+		delta_side = -0.1f;
 		break;
 	case 'i':
-		moveUp = 0.01f;
+		move_up = 0.01f;
 		break;
 	case 'k':
-		moveUp = -0.01f;
+		move_up = -0.01f;
 		break;
 	case 'j':
-		moveSide = 0.01f;
+		move_side = 0.01f;
 		break;
 	case 'l':
-		moveSide = -0.01f;
+		move_side = -0.01f;
 		break;
 	case 'v':
-		scene.switchCamera();
+		m_scene.switch_camera();
 		break;
 	case 'q':
-		deltaVertical = -0.1f;
+		delta_vertical = -0.1f;
 		break;
 	case 'e':
-		deltaVertical = 0.1f;
+		delta_vertical = 0.1f;
 		break;
 	case 'f':
-		windowChangeHandler();
+		window_change_handler();
 		break;
+	default: break;
 	}
 }
 
-void keyboardUpHandler(unsigned char key, int a, int b) {
+void keyboard_up_handler(unsigned char key, int a, int b) {
 	switch (key) {
 	case 'w':
 	case 's':
-		deltaForward = 0.0f;
+		delta_forward = 0.0f;
 		break;
 	case 'a':
 	case 'd':
-		deltaSide = 0.0f;
+		delta_side = 0.0f;
 		break;
 	case 'i':
 	case 'k':
-		moveUp = 0.0f;
+		move_up = 0.0f;
 		break;
 	case 'j':
 	case 'l':
-		moveSide = 0.0f;
+		move_side = 0.0f;
 		break;
 	case 'q':
 	case 'e':
-		deltaVertical = 0.0f;
+		delta_vertical = 0.0f;
 		break;
+	default: break;
 	}
 }
 
@@ -128,19 +131,19 @@ void keyboardUpHandler(unsigned char key, int a, int b) {
 // Mouse handling
 //--------------------------------------------------------------------------------
 
-void mouseHandler(int x, int y)
+void mouse_handler(int x, int y)
 {
-	float xOffset = x - lastX;
-	float yOffset = y - lastY;
-	lastX = (float)x;
-	lastY = (float)y;
+	float x_offset = static_cast<float>(x) - last_x;
+	float y_offset = static_cast<float>(y) - last_y;
+	last_x = static_cast<float>(x);
+	last_y = static_cast<float>(y);
 
 	const float sensitivity = 0.1f;
-	xOffset *= sensitivity;
-	yOffset *= sensitivity;
+	x_offset *= sensitivity;
+	y_offset *= sensitivity;
 
-	yaw += xOffset;
-	pitch -= yOffset;
+	yaw += x_offset;
+	pitch -= y_offset;
 
 	if (pitch > 89.0f)
 		pitch = 89.0f;
@@ -151,54 +154,54 @@ void mouseHandler(int x, int y)
 	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
 	direction.y = sin(glm::radians(pitch));
 	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-	Camera cam;
-	if (scene.cameraMode == 0)
-		cam = scene.camera;
+	camera cam;
+	if (m_scene.camera_mode == 0)
+		cam = m_scene.m_camera;
 	else
-		cam = scene.drone;
+		cam = m_scene.m_drone_camera;
 	cam.front = glm::normalize(direction);
-	if (scene.cameraMode == 0)
-		scene.camera = cam;
+	if (m_scene.camera_mode == 0)
+		m_scene.m_camera = cam;
 	else
-		scene.drone = cam;
+		m_scene.m_drone_camera = cam;
 }
 
 //--------------------------------------------------------------------------------
 // Rendering
 //--------------------------------------------------------------------------------
 
-void Render()
+void render()
 {
-	Camera cam;
-	if (scene.cameraMode == 0)
-		cam = scene.camera;
+	camera cam;
+	if (m_scene.camera_mode == 0)
+		cam = m_scene.m_camera;
 	else
-		cam = scene.drone;
+		cam = m_scene.m_drone_camera;
 
-	if (deltaForward) {
-		cam.position += deltaForward * cam.front;
+	if (delta_forward) {
+		cam.position += delta_forward * cam.front;
 	}
-	if (deltaSide) {
-		cam.position -= glm::normalize(glm::cross(cam.front, cam.up)) * deltaSide;
+	if (delta_side) {
+		cam.position -= glm::normalize(glm::cross(cam.front, cam.up)) * delta_side;
 	}
-	if (deltaVertical && scene.cameraMode == 1) {
-		cam.position.y += deltaVertical;
+	if (delta_vertical && m_scene.camera_mode == 1) {
+		cam.position.y += delta_vertical;
 	}
-	if (moveUp) {
-		cam.front.y += moveUp;
+	if (move_up) {
+		cam.front.y += move_up;
 	}
-	if (moveSide) {
-		cam.front.x -= moveSide;
+	if (move_side) {
+		cam.front.x -= move_side;
 	}
-	if (scene.cameraMode == 0) {
+	if (m_scene.camera_mode == 0) {
 		cam.position.y = 1.75f;
 	}
-	
-	if (scene.cameraMode == 0)
-		scene.camera = cam;
+
+	if (m_scene.camera_mode == 0)
+		m_scene.m_camera = cam;
 	else
-		scene.drone = cam;
-	scene.render();
+		m_scene.m_drone_camera = cam;
+	m_scene.render();
 }
 
 
@@ -207,10 +210,10 @@ void Render()
 // Render method that is called by the timer function
 //------------------------------------------------------------
 
-void Render(int n)
+void render(int n)
 {
-	Render();
-	glutTimerFunc(DELTA_TIME, Render, 0);
+	render();
+	glutTimerFunc(delta_time, render, 0);
 }
 
 
@@ -219,18 +222,18 @@ void Render(int n)
 // Initializes Glut and Glew
 //------------------------------------------------------------
 
-void InitGlutGlew(int argc, char** argv)
+void init_glut_glew(int argc, char** argv)
 {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-	glutInitWindowSize(WIDTH, HEIGHT);
+	glutInitWindowSize(width, height);
 	glutCreateWindow("Hello OpenGL");
-	glutDisplayFunc(Render);
-	glutKeyboardFunc(keyboardHandler);
+	glutDisplayFunc(render);
+	glutKeyboardFunc(keyboard_handler);
 	glutIgnoreKeyRepeat(1);
-	glutKeyboardUpFunc(keyboardUpHandler);
-	glutPassiveMotionFunc(mouseHandler);
-	glutTimerFunc(DELTA_TIME, Render, 0);
+	glutKeyboardUpFunc(keyboard_up_handler);
+	glutPassiveMotionFunc(mouse_handler);
+	glutTimerFunc(delta_time, render, 0);
 	glutSetCursor(GLUT_CURSOR_NONE);
 
 	glEnable(GL_MULTISAMPLE);
@@ -244,23 +247,23 @@ void InitGlutGlew(int argc, char** argv)
 // void InitScene()
 // Initializes the main scene
 //------------------------------------------------------------
-void InitScene()
+void init_scene()
 {
-	scene = Scene();
-	scene.init(fragshader_name, vertexshader_name, GLUT_SCREEN_WIDTH, GLUT_SCREEN_HEIGHT);
+	m_scene = scene();
+	m_scene.init(fragshader_name, vertexshader_name, GLUT_SCREEN_WIDTH, GLUT_SCREEN_HEIGHT);
 }
 
-int main(int argc, char** argv)
+int main(const int argc, char** argv)
 {
-	InitGlutGlew(argc, argv);
-	InitScene();
+	init_glut_glew(argc, argv);
+	init_scene();
 
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 
 	// Hide console window
-	HWND hWnd = GetConsoleWindow();
-	ShowWindow(hWnd, SW_HIDE);
+	const HWND h_wnd = GetConsoleWindow();
+	ShowWindow(h_wnd, SW_HIDE);
 
 	// Main loop
 	glutMainLoop();

@@ -33,10 +33,10 @@
     <ClCompile Include="Object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
+    <ClCompile Include="scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
+    <ClCompile Include="camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="House.cpp">
@@ -59,10 +59,10 @@
     <ClInclude Include="Object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
+    <ClInclude Include="scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
+    <ClInclude Include="camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="House.h">

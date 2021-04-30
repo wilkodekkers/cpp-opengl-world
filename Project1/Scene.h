@@ -1,40 +1,37 @@
 #pragma once
 #include <GL/glew.h>
-#include <glm/glm.hpp>
 #include "Object.h"
 #include "House.h"
-#include "Camera.h"
+#include "camera.h"
 
-class Scene
+class scene
 {
-private:
-	Object sign;
-	Object floor;
-	House house[8];
-	Object car;
-	glm::vec3 light_position;
+	Object sign_;
+	Object floor_;
+	House house_[8];
+	Object car_;
+	glm::vec3 light_position_;
 	
-	GLuint program_id;
-	GLuint uniform_mv;
-	GLuint uniform_material_ambient;
-	GLuint uniform_material_diffuse;
-	GLuint uniform_specular;
-	GLuint uniform_material_power;
-
+	GLuint program_id_;
+	GLuint uniform_mv_;
+	GLuint uniform_material_ambient_;
+	GLuint uniform_material_diffuse_;
+	GLuint uniform_specular_;
+	GLuint uniform_material_power_;
 	
-	float cameraSpeed = 0.05f;
+	float camera_speed_ = 0.05f;
 	
 public:
-	Camera camera;
-	Camera drone;
-	int cameraMode = 0;
+	camera m_camera;
+	camera m_drone_camera;
+	int camera_mode = 0;
 
-	Scene();
+	scene();
+	~scene();
 	void render();
 	void init(const char* fragment, const char* vertex, int width, int height);
-	void initCamera(int width, int height);
-	void initBuffers();
-	void initShaders(const char* fragment, const char* vertex);
-	void switchCamera();
+	void init_camera(int width, int height);
+	void init_buffers();
+	void init_shaders(const char* fragment, const char* vertex);
+	void switch_camera();
 };
-

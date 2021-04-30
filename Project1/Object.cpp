@@ -74,13 +74,13 @@ void Object::initTexture()
 void Object::initShaders(const char* fragment, const char* vertex, GLuint program_id)
 {
 	// Init the shader
-	char* vertexshader = glsl::readFile(vertex);
-	GLuint vsh_id = glsl::makeVertexShader(vertexshader);
+	char* vertexshader = glsl::read_file(vertex);
+	GLuint vsh_id = glsl::make_vertex_shader(vertexshader);
 
-	char* fragshader = glsl::readFile(fragment);
-	GLuint fsh_id = glsl::makeFragmentShader(fragshader);
+	char* fragshader = glsl::read_file(fragment);
+	GLuint fsh_id = glsl::make_fragment_shader(fragshader);
 
-	program_id = glsl::makeShaderProgram(vsh_id, fsh_id);
+	program_id = glsl::make_shader_program(vsh_id, fsh_id);
 }
 
 void Object::initBuffers(GLuint program_id)

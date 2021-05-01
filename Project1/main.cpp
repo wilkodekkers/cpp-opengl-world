@@ -12,7 +12,7 @@ using namespace std;
 // Consts
 //--------------------------------------------------------------------------------
 
-const int width = 1000, height = 625;
+const int width = 1280, height = 960;
 
 const char* fragshader_name = "fragmentshader.frag";
 const char* vertexshader_name = "vertexshader.vert";
@@ -227,7 +227,8 @@ void init_glut_glew(int argc, char** argv)
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 	glutInitWindowSize(width, height);
-	glutCreateWindow("Hello OpenGL");
+	glutInitWindowPosition(width / 2, height / 4);
+	glutCreateWindow("Wilko Dekkers | OpenGL Game");
 	glutDisplayFunc(render);
 	glutKeyboardFunc(keyboard_handler);
 	glutIgnoreKeyRepeat(1);

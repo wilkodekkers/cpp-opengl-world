@@ -32,10 +32,7 @@ camera::camera(const int width, const int height, const glm::vec3& position, con
 	this->up = up;
 
 	// Setting up the camera view
-	view_ = glm::lookAt(
-		position,
-		position + front,
-		up);
+	view_ = get_view();
 
 	// Setting up the camera perspective
 	projection_ = glm::perspective(

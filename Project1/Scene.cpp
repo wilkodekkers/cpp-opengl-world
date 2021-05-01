@@ -12,10 +12,7 @@ scene::scene()
 	uniform_material_power_ = GLuint();
 }
 
-scene::~scene()
-{
-	
-}
+scene::~scene() = default;
 
 void scene::render()
 {

@@ -28,8 +28,8 @@ scene m_scene;
 
 bool is_fullscreen = false;
 
-float last_x = 1200;
-float last_y = 300;
+float last_x = width / 2;
+float last_y = height / 2;
 float pitch = 0.0f;
 float yaw = 0.0f;
 
@@ -135,8 +135,6 @@ void mouse_handler(int x, int y)
 {
 	float x_offset = static_cast<float>(x) - last_x;
 	float y_offset = static_cast<float>(y) - last_y;
-	last_x = static_cast<float>(x);
-	last_y = static_cast<float>(y);
 
 	const float sensitivity = 0.1f;
 	x_offset *= sensitivity;
@@ -164,6 +162,8 @@ void mouse_handler(int x, int y)
 		m_scene.m_camera = cam;
 	else
 		m_scene.m_drone_camera = cam;
+
+	glutWarpPointer(width / 2, height / 2);
 }
 
 //--------------------------------------------------------------------------------

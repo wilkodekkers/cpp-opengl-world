@@ -1,9 +1,7 @@
-#include "Camera.h"
+#include "camera.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-camera::camera()
-{
-}
+camera::camera() = default;
 
 camera::camera(const int width, const int height)
 {
@@ -21,12 +19,12 @@ camera::camera(const int width, const int height)
 	// Setting up the camera perspective
 	projection_ = glm::perspective(
 		glm::radians(45.4f),
-		1.0f * width / height,
+		1.0f * static_cast<float>(width) / static_cast<float>(height),
 		0.1f,
 		20.0f);
 }
 
-camera::camera(const int width, const int height, const glm::vec3 position, const glm::vec3 front, const glm::vec3 up)
+camera::camera(const int width, const int height, const glm::vec3& position, const glm::vec3& front, const glm::vec3& up)
 {
 	// Initialize camera variables
 	this->position = position;
@@ -42,7 +40,7 @@ camera::camera(const int width, const int height, const glm::vec3 position, cons
 	// Setting up the camera perspective
 	projection_ = glm::perspective(
 		glm::radians(45.4f),
-		1.0f * width / height,
+		1.0f * static_cast<float>(width) / static_cast<float>(height),
 		0.1f,
 		20.0f);
 }

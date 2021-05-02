@@ -47,10 +47,6 @@ int main(const int argc, char** argv)
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
 
-	// Hide console window
-	const HWND h_wnd = GetConsoleWindow();
-	ShowWindow(h_wnd, SW_HIDE);
-
 	glutMainLoop();
 
 	return 0;

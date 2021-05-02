@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <string>
 #include <GL/glew.h>
 #include <GL/glut.h>
@@ -12,6 +14,45 @@ float positions[6] = {
 	 0.0f,  0.5f,
 	 0.5f, -0.5f
 };
+
+struct shader_program_source {
+	std::string vertex_source;
+	std::string fragment_source;
+};
+
+static shader_program_source parse_shader(const std::string& filepath)
+{
+	std::ifstream stream(filepath);
+
+	enum class shader_type
+	{
+		none = -1, vertex = 0, fragment = 1
+	};
+
+	std::string line;
+	std::stringstream ss[2];
+	auto type = shader_type::none;
+	while (getline(stream, line))
+	{
+		if (line.find("#shader") != std::string::npos)
+		{
+			if (line.find("vertex") != std::string::npos)
+			{
+				type = shader_type::vertex;
+			}
+			else if (line.find("fragment") != std::string::npos)
+			{
+				type = shader_type::fragment;
+			}
+		}
+		else
+		{
+			ss[static_cast<int>(type)] << line << "\n";
+		}
+	}
+
+	return { ss[0].str(), ss[1].str() }; 
+}
 
 static unsigned int compile_shader(const GLuint type, const std::string& source)
 {
@@ -68,7 +109,7 @@ void init_glut(int argc, char** argv)
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 	glutInitWindowSize(width, height);
-	glutInitWindowPosition(width / 2, height / 4);
+	glutInitWindowPosition((glutGet(GLUT_SCREEN_WIDTH) - width) / 2, (glutGet(GLUT_SCREEN_HEIGHT) - height) / 2);
 	glutCreateWindow("Wilko Dekkers | OpenGL Game");
 	glutDisplayFunc(render);
 
@@ -90,29 +131,9 @@ int main(const int argc, char** argv)
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
 
-	const std::string vertex_shader = 
-		"#version 330 core\n"
-		"\n"
-		"layout(location = 0) in vec4 position;"
-		"\n"
-		"void main()\n"
-		"{\n"
-		"	gl_Position = position;\n"
-		"}\n";
-	const std::string fragment_shader =
-		"#version 330 core\n"
-		"\n"
-		"layout(location = 0) out vec4 color;"
-		"\n"
-		"void main()\n"
-		"{\n"
-		"	color = vec4(1.0, 0.0, 0.0, 1.0);\n"
-		"}\n";
-	const GLuint shader = create_shader(vertex_shader, fragment_shader);
+	const shader_program_source source = parse_shader("res/shaders/Basic.shader");
+	const GLuint shader = create_shader(source.vertex_source, source.fragment_source);
 	glUseProgram(shader);
-	
-	const HWND h_wnd = GetConsoleWindow();
-	ShowWindow(h_wnd, SW_SHOW);
 
 	glutMainLoop();
 

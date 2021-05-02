@@ -21,6 +21,9 @@
   <ItemGroup>
     <ClCompile Include="src\Application.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\Basic.shader" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{C00D596E-8C1F-42BE-9951-BD197B8B5112}</ProjectGuid>

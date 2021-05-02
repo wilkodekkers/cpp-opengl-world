@@ -18,6 +18,9 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Application.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{C00D596E-8C1F-42BE-9951-BD197B8B5112}</ProjectGuid>
@@ -127,37 +130,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="camera.cpp" />
-    <ClCompile Include="glsl.cpp" />
-    <ClCompile Include="house.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="mesh.cpp" />
-    <ClCompile Include="object.cpp" />
-    <ClCompile Include="objloader.cpp" />
-    <ClCompile Include="scene.cpp" />
-    <ClCompile Include="texture.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="camera.h" />
-    <ClInclude Include="glsl.h" />
-    <ClInclude Include="house.h" />
-    <ClInclude Include="mesh.h" />
-    <ClInclude Include="object.h" />
-    <ClInclude Include="objloader.h" />
-    <ClInclude Include="scene.h" />
-    <ClInclude Include="texture.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="vertexshader.vsh">
-      <FileType>Document</FileType>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="fragmentshader.frag" />
-    <None Include="fragmentshader.fsh" />
-    <None Include="vertexshader.vert" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

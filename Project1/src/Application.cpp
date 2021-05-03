@@ -13,6 +13,10 @@
 const int width = 1280;
 const int height = 720;
 
+GLuint shader;
+float r = 0.0f;
+float increment = 0.05f;
+
 float positions[] = {
 	-0.5f, -0.5f,
 	 0.5f, -0.5f,
@@ -124,10 +128,29 @@ static GLuint create_shader(const std::string& vertex_shader, const std::string&
 void render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	glCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+
+	glCall(const int location = glGetUniformLocation(shader, "u_Color"))
+	glCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f))
+	glCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr))
+
+	if (r > 1.0f)
+	{
+		increment = -0.05f;
+	}
+	else if (r < 0.0f)
+	{
+		increment = 0.05f;
+	}
+
+	r += increment;
 	
 	glutSwapBuffers();
+}
+
+void render(int delta)
+{
+	render();
+	glutTimerFunc(1, render, 0);
 }
 
 void init_glut(int argc, char** argv)
@@ -138,6 +161,7 @@ void init_glut(int argc, char** argv)
 	glutInitWindowPosition((glutGet(GLUT_SCREEN_WIDTH) - width) / 2, (glutGet(GLUT_SCREEN_HEIGHT) - height) / 2);
 	glutCreateWindow("Wilko Dekkers | OpenGL Game");
 	glutDisplayFunc(render);
+	glutTimerFunc(1, render, 0);
 
 	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_DEPTH_TEST);
@@ -164,8 +188,11 @@ int main(const int argc, char** argv)
 	glCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW));
 
 	const shader_program_source source = parse_shader("res/shaders/Basic.shader");
-	const GLuint shader = create_shader(source.vertex_source, source.fragment_source);
+	shader = create_shader(source.vertex_source, source.fragment_source);
 	glCall(glUseProgram(shader));
+
+	glCall(const int location = glGetUniformLocation(shader, "u_Color"));
+	glCall(glUniform4f(location, 0.8f, 0.3f, 0.8f, 1.0f));
 
 	glutMainLoop();
 

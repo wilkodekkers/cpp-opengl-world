@@ -20,10 +20,11 @@ class scene
 	GLuint uniform_material_power_;
 	
 	float camera_speed_ = 0.05f;
+	camera m_camera_;
+	camera m_drone_camera_;
 	
 public:
-	camera m_camera;
-	camera m_drone_camera;
+	
 	int camera_mode = 0;
 
 	scene();
@@ -34,4 +35,5 @@ public:
 	void init_buffers();
 	void init_shaders(const char* fragment, const char* vertex);
 	void switch_camera();
+	camera* get_camera() { return camera_mode == 0 ? &m_camera_ : &m_drone_camera_; }
 };

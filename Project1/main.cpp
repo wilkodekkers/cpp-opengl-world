@@ -152,16 +152,9 @@ void mouse_handler(int x, int y)
 	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
 	direction.y = sin(glm::radians(pitch));
 	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-	camera cam;
-	if (m_scene.camera_mode == 0)
-		cam = m_scene.m_camera;
-	else
-		cam = m_scene.m_drone_camera;
-	cam.front = glm::normalize(direction);
-	if (m_scene.camera_mode == 0)
-		m_scene.m_camera = cam;
-	else
-		m_scene.m_drone_camera = cam;
+	
+	camera* cam = m_scene.get_camera();
+	cam->front = normalize(direction);
 
 	glutWarpPointer(width / 2, height / 2);
 }
@@ -172,35 +165,27 @@ void mouse_handler(int x, int y)
 
 void render()
 {
-	camera cam;
-	if (m_scene.camera_mode == 0)
-		cam = m_scene.m_camera;
-	else
-		cam = m_scene.m_drone_camera;
+	camera* cam = m_scene.get_camera();
 
 	if (delta_forward) {
-		cam.position += delta_forward * cam.front;
+		cam->position += delta_forward * cam->front;
 	}
 	if (delta_side) {
-		cam.position -= glm::normalize(glm::cross(cam.front, cam.up)) * delta_side;
+		cam->position -= normalize(cross(cam->front, cam->up)) * delta_side;
 	}
 	if (delta_vertical && m_scene.camera_mode == 1) {
-		cam.position.y += delta_vertical;
+		cam->position.y += delta_vertical;
 	}
 	if (move_up) {
-		cam.front.y += move_up;
+		cam->front.y += move_up;
 	}
 	if (move_side) {
-		cam.front.x -= move_side;
+		cam->front.x -= move_side;
 	}
 	if (m_scene.camera_mode == 0) {
-		cam.position.y = 1.75f;
+		cam->position.y = 1.75f;
 	}
 
-	if (m_scene.camera_mode == 0)
-		m_scene.m_camera = cam;
-	else
-		m_scene.m_drone_camera = cam;
 	m_scene.render();
 }
 

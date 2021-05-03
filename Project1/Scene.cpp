@@ -1,4 +1,4 @@
-#include "scene.h"
+#include "Scene.h"
 #include <GL/glut.h>
 
 scene::scene() 
@@ -27,17 +27,18 @@ void scene::render()
 
 	camera camera;
 	if (camera_mode == 0)
-		camera = this->m_camera;
+		camera = this->m_camera_;
 	else
-		camera = this->m_drone_camera;
+		camera = this->m_drone_camera_;
 
 	floor_.render(camera.get_view(), uniform_mv_, uniform_material_ambient_, uniform_material_diffuse_, uniform_specular_, uniform_material_power_);
 	sign_.render(camera.get_view(), uniform_mv_, uniform_material_ambient_, uniform_material_diffuse_, uniform_specular_, uniform_material_power_);
 	car_.render(camera.get_view(), uniform_mv_, uniform_material_ambient_, uniform_material_diffuse_, uniform_specular_, uniform_material_power_);
 
 	// Render houses
-	for (int i = 0; i < 8; i++) {
-		house_[i].render(camera.get_view(), uniform_mv_, uniform_material_ambient_, uniform_material_diffuse_, uniform_specular_, uniform_material_power_);
+	for (auto& i : house_)
+	{
+		i.render(camera.get_view(), uniform_mv_, uniform_material_ambient_, uniform_material_diffuse_, uniform_specular_, uniform_material_power_);
 	}
 
 	// Swap buffers
@@ -101,18 +102,19 @@ void scene::init(const char* fragment, const char* vertex, int width, int height
 void scene::init_camera(int width, int height)
 {
 	// Set camera variables
-	this->m_camera = camera(width, height);
-	this->m_drone_camera = camera(width, height, glm::vec3(0.0f, 10.0f, 5.0f), glm::vec3(0.0f, -2.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	this->m_camera_ = camera(width, height);
+	this->m_drone_camera_ = camera(width, height, glm::vec3(0.0f, 10.0f, 5.0f), glm::vec3(0.0f, -2.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 	// Set house matrices
-	for (int i = 0; i < 8; i++) {
-		house_[i].init_matrices(this->m_camera.get_view());
+	for (auto& i : house_)
+	{
+		i.init_matrices(this->m_camera_.get_view());
 	}
 
 	// Set other scene matrices
-	floor_.init_matrices(this->m_camera.get_view());
-	car_.init_matrices(this->m_camera.get_view());
-	sign_.init_matrices(this->m_camera.get_view());
+	floor_.init_matrices(this->m_camera_.get_view());
+	car_.init_matrices(this->m_camera_.get_view());
+	sign_.init_matrices(this->m_camera_.get_view());
 
 	// Move the floor and scale it correctly
 	floor_.move(glm::vec3(2.5f, 0.0f, 2.5f));
@@ -121,18 +123,19 @@ void scene::init_camera(int width, int height)
 	// Move the car and scale it correctly
 	car_.move(glm::vec3(2.0, 0.0, 2.0));
 	car_.scale(glm::vec3(0.05, 0.05, 0.05));
-	car_.rotate(1.6, glm::vec3(0.0, 1.0, 0.0));
+	car_.rotate(1.6f, glm::vec3(0.0, 1.0, 0.0));
 
 	// Move the sign and scale it correctly
 	sign_.move(glm::vec3(-2.0f, 0.0f, 3.0f));
 	sign_.scale(glm::vec3(0.1f, 0.1f, 0.1f));
-	sign_.rotate(1.6, glm::vec3(0.0f, 1.0f, 0.0f));
+	sign_.rotate(1.6f, glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 void scene::init_buffers()
 {
-	for (int i = 0; i < 8; i++) {
-		house_[i].init_buffers(program_id_);
+	for (auto& i : house_)
+	{
+		i.init_buffers(program_id_);
 	}
 	floor_.init_buffers(program_id_);
 	car_.init_buffers(program_id_);
@@ -141,7 +144,7 @@ void scene::init_buffers()
 	// Make uniform vars
 	uniform_mv_ = glGetUniformLocation(program_id_, "mv");
 	const GLuint uniform_proj = glGetUniformLocation(program_id_, "projection");
-	GLuint uniform_light_pos = glGetUniformLocation(program_id_, "light_pos");
+	const GLuint uniform_light_pos = glGetUniformLocation(program_id_, "light_pos");
 	uniform_material_ambient_ = glGetUniformLocation(program_id_, "mat_ambient");
 	uniform_material_diffuse_ = glGetUniformLocation(program_id_, "mat_diffuse");
 	uniform_specular_ = glGetUniformLocation(program_id_, "mat_specular");
@@ -151,7 +154,7 @@ void scene::init_buffers()
 	glUseProgram(this->program_id_);
 
 	// Fill uniform vars
-	glUniformMatrix4fv(uniform_proj, 1, GL_FALSE, glm::value_ptr(m_camera.get_projection()));
+	glUniformMatrix4fv(uniform_proj, 1, GL_FALSE, glm::value_ptr(m_camera_.get_projection()));
 	glUniform3fv(uniform_light_pos, 1, glm::value_ptr(light_position_));
 }
 

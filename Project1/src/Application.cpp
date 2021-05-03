@@ -4,17 +4,14 @@
 #include <string>
 #include <GL/glew.h>
 #include <GL/glut.h>
-
-#define ASSERT(x) if (!(x)) __debugbreak();
-#define glCall(x) glClearError();\
-	x;\
-	ASSERT(glLogCall(#x, __FILE__, __LINE__));
+#include "Renderer.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 const int width = 1280;
 const int height = 720;
 
 GLuint vao;
-GLuint ibo;
 
 GLuint shader;
 float r = 0.0f;
@@ -32,26 +29,12 @@ unsigned int indices[] = {
 	2, 3, 0
 };
 
+index_buffer* ib;
+
 struct shader_program_source {
 	std::string vertex_source;
 	std::string fragment_source;
 };
-
-static void glClearError()
-{
-	while (glGetError() != GL_NO_ERROR);
-}
-
-static bool glLogCall(const char* function, const char* file, int line)
-{
-	while (const GLenum error = glGetError())
-	{
-		std::cout << "[OpenGL Error] (" << std::hex << error << "): " << function << " " << file << ":" << line << std::endl;
-		return false;
-	}
-	
-	return true;
-}
 
 static shader_program_source parse_shader(const std::string& filepath)
 {
@@ -133,13 +116,13 @@ void render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glCall(glUseProgram(shader))
-	glCall(const int location = glGetUniformLocation(shader, "u_Color"))
-	glCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f))
+	glCall(const int location = glGetUniformLocation(shader, "u_Color"));
+	glCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f));
 
-	glCall(glBindVertexArray(vao))
-	glCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo))
+	glCall(glBindVertexArray(vao));
+	ib->bind();
 	
-	glCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr))
+	glCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0))
 
 	if (r > 1.0f)
 	{
@@ -182,33 +165,23 @@ int main(const int argc, char** argv)
 {
 	init_glut(argc, argv);
 
-	glCall(glGenVertexArrays(1, &vao))
-	glCall(glBindVertexArray(vao))
+	glCall(glGenVertexArrays(1, &vao));
+	glCall(glBindVertexArray(vao));
+
+	vertex_buffer vb(positions, 4 * 2 * sizeof(float));
+
+	glCall(glEnableVertexAttribArray(0));
+	glCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr));
+
+	auto nib = index_buffer(indices, 6);
+	ib = &nib;
 	
-	GLuint buffer;
-	glCall(glGenBuffers(1, &buffer))
-	glCall(glBindBuffer(GL_ARRAY_BUFFER, buffer))
-	glCall(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW))
-
-	glCall(glEnableVertexAttribArray(0))
-	glCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr))
-		
-	glCall(glGenBuffers(1, &ibo))
-	glCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo))
-	glCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW))
-
 	const shader_program_source source = parse_shader("res/shaders/Basic.shader");
 	shader = create_shader(source.vertex_source, source.fragment_source);
 	glCall(glUseProgram(shader))
 
 	glCall(const int location = glGetUniformLocation(shader, "u_Color"))
 	glCall(glUniform4f(location, 0.8f, 0.3f, 0.8f, 1.0f))
-
-	// RESET
-	glCall(glBindVertexArray(0))
-	glCall(glUseProgram(0))
-	glCall(glBindBuffer(GL_ARRAY_BUFFER, 0))
-	glCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0))
 
 	glutMainLoop();
 

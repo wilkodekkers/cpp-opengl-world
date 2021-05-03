@@ -151,14 +151,6 @@ void mouse_handler(const int x, const int y)
 	if (pitch < -89.0f)
 		pitch = -89.0f;
 
-	glm::vec3 direction;
-	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	direction.y = sin(glm::radians(pitch));
-	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-	
-	camera* cam = m_scene.get_camera();
-	cam->front = normalize(direction);
-
 	glutWarpPointer(width / 2, height / 2);
 }
 
@@ -169,19 +161,15 @@ void mouse_handler(const int x, const int y)
 void handle_keyboard_camera_movement()
 {
 	camera* cam = m_scene.get_camera();
-	glm::vec3 direction;
-	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	direction.y = sin(glm::radians(pitch));
-	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 	
 	if (delta_forward) {
-		cam->position += delta_forward * cam->front;
+		cam->set_position(cam->get_position() + delta_forward * cam->get_front());
 	}
 	if (delta_side) {
-		cam->position -= normalize(cross(cam->front, cam->up)) * delta_side;
+		cam->set_position(cam->get_position() - normalize(cross(cam->get_front(), cam->get_up())) * delta_side);
 	}
 	if (delta_vertical && m_scene.camera_mode == 1) {
-		cam->position.y += delta_vertical;
+		cam->set_position(cam->get_position() + glm::vec3(0.0f, delta_vertical, 0.0f));
 	}
 	if (move_side || move_up) {
 
@@ -192,17 +180,26 @@ void handle_keyboard_camera_movement()
 			pitch = 89.0f;
 		if (pitch < -89.0f)
 			pitch = -89.0f;
-		
-		cam->front = normalize(direction);
 	}
 	if (m_scene.camera_mode == 0) {
-		cam->position.y = 1.75f;
+		glm::vec3 old = cam->get_position();
+		cam->set_position(glm::vec3(old.x, 1.75f, old.z));
 	}
+}
+
+void update_camera()
+{
+	glm::vec3 direction;
+	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	direction.y = sin(glm::radians(pitch));
+	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	m_scene.get_camera()->set_front(normalize(direction));
 }
 
 void render()
 {
 	handle_keyboard_camera_movement();
+	update_camera();
 	m_scene.render();
 }
 

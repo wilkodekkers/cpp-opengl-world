@@ -1,4 +1,4 @@
-#include "camera.h"
+#include "Camera.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 camera::camera() = default;
@@ -6,15 +6,15 @@ camera::camera() = default;
 camera::camera(const int width, const int height)
 {
 	// Initialize camera variables
-	position = glm::vec3(0.0f, 1.75f, 5.0f);
-	front = glm::vec3(0.0f, 0.0f, -1.0f);
-	up = glm::vec3(0.0f, 1.0f, 0.0f);
+	position_ = glm::vec3(0.0f, 1.75f, 5.0f);
+	front_ = glm::vec3(0.0f, 0.0f, -1.0f);
+	up_ = glm::vec3(0.0f, 1.0f, 0.0f);
 
 	// Setting up the camera view
 	view_ = glm::lookAt(
-		position,
-		position + front,
-		up);
+		position_,
+		position_ + front_,
+		up_);
 
 	// Setting up the camera perspective
 	projection_ = glm::perspective(
@@ -27,9 +27,9 @@ camera::camera(const int width, const int height)
 camera::camera(const int width, const int height, const glm::vec3& position, const glm::vec3& front, const glm::vec3& up)
 {
 	// Initialize camera variables
-	this->position = position;
-	this->front = front;
-	this->up = up;
+	this->position_ = position;
+	this->front_ = front;
+	this->up_ = up;
 
 	// Setting up the camera view
 	view_ = get_view();
@@ -44,13 +44,8 @@ camera::camera(const int width, const int height, const glm::vec3& position, con
 
 glm::mat4 camera::get_view() const
 {
-	return glm::lookAt(
-		position,
-		position + front,
-		up);
-}
-
-glm::mat4 camera::get_projection() const
-{
-	return projection_;
+	return lookAt(
+		position_,
+		position_ + front_,
+		up_);
 }

@@ -101,7 +101,7 @@ void keyboard_handler(const unsigned char key, int a, int b)
 	}
 }
 
-void keyboard_up_handler(unsigned char key, int a, int b) {
+void keyboard_up_handler(const unsigned char key, int a, int b) {
 	switch (key) {
 	case 'w':
 	case 's':
@@ -131,8 +131,10 @@ void keyboard_up_handler(unsigned char key, int a, int b) {
 // Mouse handling
 //--------------------------------------------------------------------------------
 
-void mouse_handler(int x, int y)
+void mouse_handler(const int x, const int y)
 {
+	if (x == last_x && y == last_y) return;
+	
 	float x_offset = static_cast<float>(x) - last_x;
 	float y_offset = static_cast<float>(y) - last_y;
 

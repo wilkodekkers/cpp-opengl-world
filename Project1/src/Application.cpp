@@ -13,6 +13,9 @@
 const int width = 1280;
 const int height = 720;
 
+GLuint vao;
+GLuint ibo;
+
 GLuint shader;
 float r = 0.0f;
 float increment = 0.05f;
@@ -88,20 +91,20 @@ static unsigned int compile_shader(const GLuint type, const std::string& source)
 {
 	const GLuint id = glCreateShader(type);
 	const char* src = source.c_str();
-	glCall(glShaderSource(id, 1, &src, nullptr));
-	glCall(glCompileShader(id));
+	glCall(glShaderSource(id, 1, &src, nullptr))
+	glCall(glCompileShader(id))
 
 	int result;
 	glCall(glGetShaderiv(id, GL_COMPILE_STATUS, &result));
 	if (result == GL_FALSE)
 	{
 		int length;
-		glCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
+		glCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length))
 		const auto message = static_cast<char*>(_malloca(length * sizeof(char)));
-		glCall(glGetShaderInfoLog(id, length, &length, message));
+		glCall(glGetShaderInfoLog(id, length, &length, message))
 		std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << std::endl;
 		std::cout << message << std::endl;
-		glCall(glDeleteShader(id));
+		glCall(glDeleteShader(id))
 		return 0;
 	}
 
@@ -114,13 +117,13 @@ static GLuint create_shader(const std::string& vertex_shader, const std::string&
 	const GLuint vs = compile_shader(GL_VERTEX_SHADER, vertex_shader);
 	const GLuint fs = compile_shader(GL_FRAGMENT_SHADER, fragment_shader);
 
-	glCall(glAttachShader(program, vs));
-	glCall(glAttachShader(program, fs));
-	glCall(glLinkProgram(program));
-	glCall(glValidateProgram(program));
+	glCall(glAttachShader(program, vs))
+	glCall(glAttachShader(program, fs))
+	glCall(glLinkProgram(program))
+	glCall(glValidateProgram(program))
 
-	glCall(glDeleteShader(vs));
-	glCall(glDeleteShader(fs));
+	glCall(glDeleteShader(vs))
+	glCall(glDeleteShader(fs))
 
 	return program;
 }
@@ -129,8 +132,13 @@ void render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	glCall(glUseProgram(shader))
 	glCall(const int location = glGetUniformLocation(shader, "u_Color"))
 	glCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f))
+
+	glCall(glBindVertexArray(vao))
+	glCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo))
+	
 	glCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr))
 
 	if (r > 1.0f)
@@ -173,30 +181,38 @@ void init_glut(int argc, char** argv)
 int main(const int argc, char** argv)
 {
 	init_glut(argc, argv);
+
+	glCall(glGenVertexArrays(1, &vao))
+	glCall(glBindVertexArray(vao))
 	
 	GLuint buffer;
-	glCall(glGenBuffers(1, &buffer));
-	glCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-	glCall(glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), positions, GL_STATIC_DRAW));
+	glCall(glGenBuffers(1, &buffer))
+	glCall(glBindBuffer(GL_ARRAY_BUFFER, buffer))
+	glCall(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW))
 
-	glCall(glEnableVertexAttribArray(0));
-	glCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr));
-
-	GLuint ibo;
-	glCall(glGenBuffers(1, &ibo));
-	glCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
-	glCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW));
+	glCall(glEnableVertexAttribArray(0))
+	glCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr))
+		
+	glCall(glGenBuffers(1, &ibo))
+	glCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo))
+	glCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW))
 
 	const shader_program_source source = parse_shader("res/shaders/Basic.shader");
 	shader = create_shader(source.vertex_source, source.fragment_source);
-	glCall(glUseProgram(shader));
+	glCall(glUseProgram(shader))
 
-	glCall(const int location = glGetUniformLocation(shader, "u_Color"));
-	glCall(glUniform4f(location, 0.8f, 0.3f, 0.8f, 1.0f));
+	glCall(const int location = glGetUniformLocation(shader, "u_Color"))
+	glCall(glUniform4f(location, 0.8f, 0.3f, 0.8f, 1.0f))
+
+	// RESET
+	glCall(glBindVertexArray(0))
+	glCall(glUseProgram(0))
+	glCall(glBindBuffer(GL_ARRAY_BUFFER, 0))
+	glCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0))
 
 	glutMainLoop();
 
-	glCall(glDeleteProgram(shader));
+	glCall(glDeleteProgram(shader))
 
 	return 0;
 }

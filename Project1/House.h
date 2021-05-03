@@ -20,4 +20,3 @@ public:
 	void init_matrices(glm::mat4 view);
 	void render(glm::mat4 view, GLuint uniform_mv, GLuint uniform_material_ambient, GLuint uniform_material_diffuse, GLuint uniform_specular, GLuint uniform_material_power);
 };
-

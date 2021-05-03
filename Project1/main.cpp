@@ -133,7 +133,8 @@ void keyboard_up_handler(const unsigned char key, int a, int b) {
 
 void mouse_handler(const int x, const int y)
 {
-	if (x == last_x && y == last_y) return;
+	// Ignore when not using the mouse
+	if (x == static_cast<int>(last_x) && y == static_cast<int>(last_y)) return;
 	
 	float x_offset = static_cast<float>(x) - last_x;
 	float y_offset = static_cast<float>(y) - last_y;
@@ -165,10 +166,14 @@ void mouse_handler(const int x, const int y)
 // Rendering
 //--------------------------------------------------------------------------------
 
-void render()
+void handle_keyboard_camera_movement()
 {
 	camera* cam = m_scene.get_camera();
-
+	glm::vec3 direction;
+	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	direction.y = sin(glm::radians(pitch));
+	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	
 	if (delta_forward) {
 		cam->position += delta_forward * cam->front;
 	}
@@ -178,16 +183,26 @@ void render()
 	if (delta_vertical && m_scene.camera_mode == 1) {
 		cam->position.y += delta_vertical;
 	}
-	if (move_up) {
-		cam->front.y += move_up;
-	}
-	if (move_side) {
-		cam->front.x -= move_side;
+	if (move_side || move_up) {
+
+		yaw -= move_side * 50;
+		pitch += move_up * 50;
+
+		if (pitch > 89.0f)
+			pitch = 89.0f;
+		if (pitch < -89.0f)
+			pitch = -89.0f;
+		
+		cam->front = normalize(direction);
 	}
 	if (m_scene.camera_mode == 0) {
 		cam->position.y = 1.75f;
 	}
+}
 
+void render()
+{
+	handle_keyboard_camera_movement();
 	m_scene.render();
 }
 

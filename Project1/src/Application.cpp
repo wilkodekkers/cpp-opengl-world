@@ -7,6 +7,7 @@
 #include "Renderer.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "VertexArray.h"
 
 const int width = 1280;
 const int height = 720;
@@ -30,6 +31,7 @@ unsigned int indices[] = {
 };
 
 index_buffer* ib;
+vertex_array* va;
 
 struct shader_program_source {
 	std::string vertex_source;
@@ -118,8 +120,8 @@ void render()
 	glCall(glUseProgram(shader))
 	glCall(const int location = glGetUniformLocation(shader, "u_Color"));
 	glCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f));
-
-	glCall(glBindVertexArray(vao));
+	
+	va->bind();
 	ib->bind();
 	
 	glCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0))
@@ -168,11 +170,14 @@ int main(const int argc, char** argv)
 	glCall(glGenVertexArrays(1, &vao));
 	glCall(glBindVertexArray(vao));
 
+	vertex_array nva;
+	va = &nva;
 	vertex_buffer vb(positions, 4 * 2 * sizeof(float));
 
-	glCall(glEnableVertexAttribArray(0));
-	glCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr));
-
+	vertex_buffer_layout layout;
+	layout.push<float>(2);
+	va->add_buffer(vb, layout);
+	
 	auto nib = index_buffer(indices, 6);
 	ib = &nib;
 	

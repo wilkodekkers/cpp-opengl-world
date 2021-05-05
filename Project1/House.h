@@ -2,7 +2,7 @@
 
 #include "Object.h"
 
-class house
+class house : object
 {
 	object base_;
 	object roof_;
@@ -17,6 +17,6 @@ public:
 	void init_model();
 	void init_texture();
 	void init_buffers(GLuint program_id);
-	void init_matrices(glm::mat4 view);
-	void render(glm::mat4 view, GLuint uniform_mv, GLuint uniform_material_ambient, GLuint uniform_material_diffuse, GLuint uniform_specular, GLuint uniform_material_power);
+	void init_matrices(const glm::mat4& view);
+	void render(const glm::mat4& view);
 };

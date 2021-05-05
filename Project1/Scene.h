@@ -6,6 +6,8 @@
 
 class scene
 {
+	std::vector<object*> objects_;
+	
 	object sign_;
 	object floor_;
 	house house_[8];
@@ -13,11 +15,6 @@ class scene
 	glm::vec3 light_position_;
 	
 	GLuint program_id_;
-	GLuint uniform_mv_;
-	GLuint uniform_material_ambient_;
-	GLuint uniform_material_diffuse_;
-	GLuint uniform_specular_;
-	GLuint uniform_material_power_;
 	
 	float camera_speed_ = 0.05f;
 	camera m_camera_;

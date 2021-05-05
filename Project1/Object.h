@@ -8,6 +8,13 @@ using namespace std;
 
 class object
 {
+protected:
+	GLuint vao_;
+	GLuint uniform_mv_;
+	GLuint uniform_material_ambient_;
+	GLuint uniform_material_diffuse_;
+	GLuint uniform_specular_;
+	GLuint uniform_material_power_;
 public:
 	vector<glm::vec3> normals;
 	vector<glm::vec3> vertices;
@@ -15,8 +22,6 @@ public:
 
 	glm::mat4 model;
 	glm::mat4 mv;
-
-	GLuint vao;
 	
 	GLuint position_id;
 	GLuint normal_id;
@@ -42,9 +47,9 @@ public:
 
 	void init_model();
 	void init_texture();
-	void init_shaders(const char* fragment, const char* vertex, GLuint program_id);
+	void init_shader(const char* fragment, const char* vertex, GLuint program_id);
 	void init_buffers(GLuint program_id);
 	void init_matrices(glm::mat4 view);
-	void render(glm::mat4 view, GLuint uniform_mv, GLuint uniform_material_ambient, GLuint uniform_material_diffuse, GLuint uniform_specular, GLuint uniform_material_power);
+	void render(glm::mat4 view);
 };
 

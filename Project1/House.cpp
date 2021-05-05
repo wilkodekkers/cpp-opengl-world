@@ -1,4 +1,4 @@
-#include "house.h"
+#include "House.h"
 
 house::house()
 {
@@ -16,9 +16,7 @@ house::house(const object base, const object roof, const object car, const objec
 	this->pos_ = pos;
 }
 
-house::~house()
-{
-}
+house::~house() = default;
 
 void house::init_model()
 {
@@ -47,7 +45,7 @@ void house::init_buffers(const GLuint program_id)
 	street_light_.init_buffers(program_id);
 }
 
-void house::init_matrices(const glm::mat4 view)
+void house::init_matrices(const glm::mat4& view)
 {
 	// Init all house related matrices
 	base_.init_matrices(view);
@@ -61,7 +59,7 @@ void house::init_matrices(const glm::mat4 view)
 	// Move the roof and scale/rotate it
 	roof_.move(pos_ + glm::vec3(0.25, 0.65, 0.0));
 	roof_.scale(glm::vec3(0.72, 1.0, 1.0));
-	roof_.rotate(0.78, glm::vec3(0.0, 0.0, 1.0));
+	roof_.rotate(0.78f, glm::vec3(0.0, 0.0, 1.0));
 
 	// Move the car to the correct place and fix the scale
 	car_.move(pos_ + glm::vec3(1.0, 0.0, 0.0));
@@ -73,7 +71,7 @@ void house::init_matrices(const glm::mat4 view)
 	street_light_.rotate(1.6f, glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
-void house::render(const glm::mat4 view, const GLuint uniform_mv, const GLuint uniform_material_ambient, const GLuint uniform_material_diffuse, const GLuint uniform_specular, const GLuint uniform_material_power)
+void house::render(const glm::mat4& view)
 {
 	// Roof up and down animation
 	if (pos_.y < 1) {
@@ -86,8 +84,8 @@ void house::render(const glm::mat4 view, const GLuint uniform_mv, const GLuint u
 	}
 
 	// Render all house related objects
-	base_.render(view, uniform_mv, uniform_material_ambient, uniform_material_diffuse, uniform_specular, uniform_material_power);
-	roof_.render(view, uniform_mv, uniform_material_ambient, uniform_material_diffuse, uniform_specular, uniform_material_power);
-	car_.render(view, uniform_mv, uniform_material_ambient, uniform_material_diffuse, uniform_specular, uniform_material_power);
-	street_light_.render(view, uniform_mv, uniform_material_ambient, uniform_material_diffuse, uniform_specular, uniform_material_power);
+	base_.render(view);
+	roof_.render(view);
+	car_.render(view);
+	street_light_.render(view);
 }

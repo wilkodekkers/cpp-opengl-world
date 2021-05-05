@@ -5,11 +5,6 @@ scene::scene()
 {
 	// Init scene variables to remove warnings
 	program_id_ = GLuint();
-	uniform_mv_ = GLuint();
-	uniform_material_ambient_ = GLuint();
-	uniform_material_diffuse_ = GLuint();
-	uniform_specular_ = GLuint();
-	uniform_material_power_ = GLuint();
 }
 
 scene::~scene() = default;
@@ -25,20 +20,16 @@ void scene::render()
 	car_.rotate(0.03f, glm::vec3(0.0f, 1.0f, 0.0f));
 	sign_.rotate(0.01f, glm::vec3(1.0f, 0.0f, 0.0f));
 
-	camera camera;
-	if (camera_mode == 0)
-		camera = this->m_camera_;
-	else
-		camera = this->m_drone_camera_;
-
-	floor_.render(camera.get_view(), uniform_mv_, uniform_material_ambient_, uniform_material_diffuse_, uniform_specular_, uniform_material_power_);
-	sign_.render(camera.get_view(), uniform_mv_, uniform_material_ambient_, uniform_material_diffuse_, uniform_specular_, uniform_material_power_);
-	car_.render(camera.get_view(), uniform_mv_, uniform_material_ambient_, uniform_material_diffuse_, uniform_specular_, uniform_material_power_);
+	const glm::mat4 view = get_camera()->get_view();
+	
+	floor_.render(view);
+	sign_.render(view);
+	car_.render(view);
 
 	// Render houses
 	for (auto& i : house_)
 	{
-		i.render(camera.get_view(), uniform_mv_, uniform_material_ambient_, uniform_material_diffuse_, uniform_specular_, uniform_material_power_);
+		i.render(view);
 	}
 
 	// Swap buffers
@@ -142,13 +133,8 @@ void scene::init_buffers()
 	sign_.init_buffers(program_id_);
 
 	// Make uniform vars
-	uniform_mv_ = glGetUniformLocation(program_id_, "mv");
 	const GLuint uniform_proj = glGetUniformLocation(program_id_, "projection");
 	const GLuint uniform_light_pos = glGetUniformLocation(program_id_, "light_pos");
-	uniform_material_ambient_ = glGetUniformLocation(program_id_, "mat_ambient");
-	uniform_material_diffuse_ = glGetUniformLocation(program_id_, "mat_diffuse");
-	uniform_specular_ = glGetUniformLocation(program_id_, "mat_specular");
-	uniform_material_power_ = glGetUniformLocation(program_id_, "mat_power");
 
 	// Attach to program
 	glUseProgram(this->program_id_);
@@ -168,7 +154,7 @@ void scene::init_shaders(const char* fragment, const char* vertex)
 
 	program_id_ = glsl::make_shader_program(vsh_id, fsh_id);
 
-	car_.init_shaders(fragment, vertex, program_id_);
+	car_.init_shader(fragment, vertex, program_id_);
 }
 
 void scene::switch_camera()

@@ -75,7 +75,7 @@ void object::init_texture()
 	}
 }
 
-void object::init_shaders(const char* fragment, const char* vertex, GLuint program_id)
+void object::init_shader(const char* fragment, const char* vertex, GLuint program_id)
 {
 	// Init the shader
 	char* vertexshader = glsl::read_file(vertex);
@@ -93,6 +93,12 @@ void object::init_buffers(GLuint program_id)
 	position_id = glGetAttribLocation(program_id, "position");
 	normal_id = glGetAttribLocation(program_id, "normal");
 	uv_id = glGetAttribLocation(program_id, "uv");
+
+	uniform_mv_ = glGetUniformLocation(program_id, "mv");
+	uniform_material_ambient_ = glGetUniformLocation(program_id, "mat_ambient");
+	uniform_material_diffuse_ = glGetUniformLocation(program_id, "mat_diffuse");
+	uniform_specular_ = glGetUniformLocation(program_id, "mat_specular");
+	uniform_material_power_ = glGetUniformLocation(program_id, "mat_power");
 
 	// vbo for vertices
 	glGenBuffers(1, &this->vbo_vertices);
@@ -113,10 +119,10 @@ void object::init_buffers(GLuint program_id)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// Allocate memory for vao
-	glGenVertexArrays(1, &this->vao);
+	glGenVertexArrays(1, &this->vao_);
 
 	// Bind to vao
-	glBindVertexArray(this->vao);
+	glBindVertexArray(this->vao_);
 
 	// Bind vertices to vao
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_vertices);
@@ -147,7 +153,7 @@ void object::init_matrices(const glm::mat4 view)
 	this->mv = view * this->model;
 }
 
-void object::render(const glm::mat4 view, const GLuint uniform_mv, const GLuint uniform_material_ambient, const GLuint uniform_material_diffuse, const GLuint uniform_specular, const GLuint uniform_material_power)
+void object::render(const glm::mat4 view)
 {
 	glBindTexture(GL_TEXTURE_2D, this->texture_id);
 
@@ -156,13 +162,13 @@ void object::render(const glm::mat4 view, const GLuint uniform_mv, const GLuint 
 	this->mv = view * this->model;
 
 	// Send mv
-	glUniformMatrix4fv(uniform_mv, 1, GL_FALSE, glm::value_ptr(this->mv));
+	glUniformMatrix4fv(uniform_mv_, 1, GL_FALSE, glm::value_ptr(this->mv));
 
 	// Fill uniform vars for material
-	this->m_mesh.fill_uniform_vars(uniform_material_ambient, uniform_material_diffuse, uniform_specular, uniform_material_power);
+	this->m_mesh.fill_uniform_vars(uniform_material_ambient_, uniform_material_diffuse_, uniform_specular_, uniform_material_power_);
 
 	// Send vao
-	glBindVertexArray(this->vao);
+	glBindVertexArray(this->vao_);
 	glDrawArrays(GL_TRIANGLES, 0, this->vertices.size());
 	glBindVertexArray(0);
 }

@@ -2,7 +2,7 @@
 
 #include "Object.h"
 
-class house : object
+class house : public object
 {
 	object base_;
 	object roof_;

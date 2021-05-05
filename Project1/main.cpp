@@ -255,15 +255,15 @@ void init_scene()
 
 int main(const int argc, char** argv)
 {
+	// Hide console window
+	const HWND h_wnd = GetConsoleWindow();
+	ShowWindow(h_wnd, SW_SHOW);
+	
 	init_glut_glew(argc, argv);
 	init_scene();
 
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
-
-	// Hide console window
-	const HWND h_wnd = GetConsoleWindow();
-	ShowWindow(h_wnd, SW_HIDE);
 
 	// Main loop
 	glutMainLoop();

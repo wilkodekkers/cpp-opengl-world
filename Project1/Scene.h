@@ -10,6 +10,7 @@ class scene
 	
 	object sign_;
 	object floor_;
+	object road_;
 	house house_[8];
 	object car_;
 	glm::vec3 light_position_;

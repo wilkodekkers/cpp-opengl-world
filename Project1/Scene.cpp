@@ -23,6 +23,7 @@ void scene::render()
 	const glm::mat4 view = get_camera()->get_view();
 	
 	floor_.render(view);
+	road_.render(view);
 	sign_.render(view);
 	car_.render(view);
 
@@ -75,6 +76,12 @@ void scene::init(const char* fragment, const char* vertex, int width, int height
 	floor.init_texture();
 	this->floor_ = floor;
 
+	// Init road model
+	auto road = object("Objects/box.obj", "Textures/road.bmp", glm::vec3(100.0f, 1.0f, 1.0f));
+	road.init_model();
+	road.init_texture();
+	this->road_ = road;
+
 	// Init sign model
 	auto sign = object("Objects/sign.obj", "Textures/sign.bmp", glm::vec3(100.0f, 100.0f, 100.0f));
 	sign.init_model();
@@ -106,10 +113,16 @@ void scene::init_camera(int width, int height)
 	floor_.init_matrices(this->m_camera_.get_view());
 	car_.init_matrices(this->m_camera_.get_view());
 	sign_.init_matrices(this->m_camera_.get_view());
+	road_.init_matrices(m_camera_.get_view());
 
 	// Move the floor and scale it correctly
 	floor_.move(glm::vec3(2.5f, 0.0f, 2.5f));
-	floor_.scale(glm::vec3(10.0f, 0.01f, 10.f));
+	floor_.scale(glm::vec3(10.0f, 0.01f, 10.0f));
+
+	// Move the road and scale it correctly
+	road_.move(glm::vec3(2.5f, 0.01f, 2.0f));
+	road_.scale(glm::vec3(10.0f, 0.01f, 2.0f));
+	road_.rotate(1.57079633f, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	// Move the car and scale it correctly
 	car_.move(glm::vec3(2.0, 0.0, 2.0));
@@ -131,6 +144,7 @@ void scene::init_buffers()
 	floor_.init_buffers(program_id_);
 	car_.init_buffers(program_id_);
 	sign_.init_buffers(program_id_);
+	road_.init_buffers(program_id_);
 
 	// Make uniform vars
 	const GLuint uniform_proj = glGetUniformLocation(program_id_, "projection");

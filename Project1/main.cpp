@@ -183,7 +183,7 @@ void handle_keyboard_camera_movement()
 	}
 	if (m_scene.camera_mode == 0) {
 		glm::vec3 old = cam->get_position();
-		cam->set_position(glm::vec3(old.x, 1.75f, old.z));
+		cam->set_position(glm::vec3(old.x, 0.15, old.z));
 	}
 }
 

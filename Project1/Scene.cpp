@@ -92,7 +92,7 @@ void scene::init_camera(const int width, const int height)
 	road_.rotate(1.57079633f, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	// Move the car and scale it correctly
-	car_.move(glm::vec3(2.0, 0.0, 2.0));
+	car_.move(glm::vec3(-2.0, 0.0, 2.5));
 	car_.scale(glm::vec3(0.05, 0.05, 0.05));
 	car_.rotate(1.6f, glm::vec3(0.0, 1.0, 0.0));
 

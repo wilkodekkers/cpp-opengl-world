@@ -15,6 +15,7 @@ object::object()
 		glm::vec3(0.5f, 0.5f, 0.3f), // Diffuse
 		glm::vec3(1.0f, 1.0f, 1.0f), // Specular
 		1024);
+	this->position_ = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 object::object(const char* model_path, const char* texture_path, const glm::vec3 specular)
@@ -46,10 +47,10 @@ object::object(const char* model_path, const char* texture_path, const mesh mesh
 	init_texture();
 }
 
-void object::move(const glm::vec3 pos)
+void object::move(const glm::vec3& pos)
 {
-	// Move the object
-	this->model = glm::translate(this->model, pos);
+	this->model = translate(this->model, pos);
+	position_ = position_ + pos;
 }
 
 void object::rotate(const float radians, const glm::vec3 angles)

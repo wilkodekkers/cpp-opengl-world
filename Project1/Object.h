@@ -15,6 +15,8 @@ protected:
 	GLuint uniform_material_diffuse_;
 	GLuint uniform_specular_;
 	GLuint uniform_material_power_;
+
+	glm::vec3 position_;
 public:
 	vector<glm::vec3> normals;
 	vector<glm::vec3> vertices;
@@ -41,7 +43,7 @@ public:
 	object(const char* model_path, const char* texture_path, glm::vec3 specular);
 	object(const char* model_path, const char* texture_path, mesh m_mesh);
 
-	void move(glm::vec3 pos);
+	void move(const glm::vec3& pos);
 	void rotate(float radians, glm::vec3 angles);
 	void scale(glm::vec3 scales);
 	virtual void animate();
@@ -52,5 +54,7 @@ public:
 	void init_buffers(GLuint program_id);
 	void init_matrices(glm::mat4 view);
 	void render(glm::mat4 view);
+
+	glm::vec3 get_position() const { return position_; }
 };
 

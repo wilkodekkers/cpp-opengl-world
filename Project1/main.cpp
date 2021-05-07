@@ -198,9 +198,14 @@ void update_camera()
 
 void render()
 {
+	glClearColor(0.2f, 0.3f, 0.8f, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
 	handle_keyboard_camera_movement();
 	update_camera();
 	m_scene.render();
+
+	glutSwapBuffers();
 }
 
 
@@ -224,7 +229,7 @@ void render(int n)
 void init_glut_glew(int argc, char** argv)
 {
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE);
 	glutInitWindowSize(width, height);
 	glutInitWindowPosition(width / 2, height / 4);
 	glutCreateWindow("Wilko Dekkers | OpenGL Game");

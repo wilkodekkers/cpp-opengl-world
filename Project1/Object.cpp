@@ -30,6 +30,9 @@ object::object(const char* model_path, const char* texture_path, const glm::vec3
 		1024);
 	this->model_path = model_path;
 	this->texture_path = texture_path;
+
+	init_model();
+	init_texture();
 }
 
 object::object(const char* model_path, const char* texture_path, const mesh mesh)
@@ -38,6 +41,9 @@ object::object(const char* model_path, const char* texture_path, const mesh mesh
 	this->model_path = model_path;
 	this->texture_path = texture_path;
 	this->m_mesh = mesh;
+
+	init_model();
+	init_texture();
 }
 
 void object::move(const glm::vec3 pos)

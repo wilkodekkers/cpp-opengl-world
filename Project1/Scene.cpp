@@ -1,5 +1,10 @@
 #include "Scene.h"
-#include <GL/glut.h>
+#include "box.h"
+#include "car.h"
+#include "plane.h"
+#include "roof.h"
+#include "sign.h"
+#include "street_light.h"
 
 scene::scene() 
 {
@@ -11,9 +16,6 @@ scene::~scene() = default;
 
 void scene::render()
 {
-	glClearColor(0.0, 0.0, 0.0, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	// Attach to program_id
 	glUseProgram(this->program_id_);
 
@@ -32,63 +34,29 @@ void scene::render()
 	{
 		i.render(view);
 	}
-
-	// Swap buffers
-	glutSwapBuffers();
 }
 
-void scene::init(const char* fragment, const char* vertex, int width, int height)
+void scene::init(const char* fragment, const char* vertex, const int width, const int height)
 {
-	// Init base model
-	auto base = object("Objects/box.obj", "Textures/house_bricks.bmp", glm::vec3(1.0f, 1.0f, 1.0f));
-	base.init_model();
-	base.init_texture();
-
-	// Init roof model
-	auto roof = object("Objects/roof.obj", "Textures/roof_panes.bmp", glm::vec3(1.0f, 1.0f, 1.0f));
-	roof.init_model();
-	roof.init_texture();
-
-	// Init car model
-	auto car = object("Objects/car.obj", "Textures/car.bmp", glm::vec3(1.0f, 1.0f, 1.0f));
-	car.init_model();
-	car.init_texture();
-
-	// Init street light model
-	auto streetLight = object("Objects/street_light.obj", "Textures/street_lantern.bmp", glm::vec3(1.0f, 1.0f, 1.0f));
-	streetLight.init_model();
-	streetLight.init_texture();
-
-	// Set car variable
-	this->car_ = car;
-
-	// Fill house array
+	// init base classes
+	const auto base = box("Textures/house_bricks.bmp");
+	const auto m_roof = roof("Textures/roof_panes.bmp");
+	const auto m_car = car();
+	const auto m_street_light = street_light();
+	
+	// Create street of houses
 	for (int i = 0; i < 4; i++) {
-		house_[i] = house(base, roof, car, streetLight, glm::vec3(2.0 * i, 0.0, 0.0));
+		house_[i] = house(base, m_roof, m_car, m_street_light, glm::vec3(2.0 * i, 0.0, 0.0));
 	}
 	for (int i = 4; i < 8; i++) {
-		house_[i] = house(base, roof, car, streetLight, glm::vec3(2.0 * (i - 4), 0.0, 4.0));
+		house_[i] = house(base, m_roof, m_car, m_street_light, glm::vec3(2.0 * (i - 4), 0.0, 4.0));
 	}
 
-	// Init floor model
-	auto floor = object("Objects/box.obj", "Textures/grass.bmp", glm::vec3(100.0f, 1.0f, 1.0f));
-	floor.init_model();
-	floor.init_texture();
-	this->floor_ = floor;
-
-	// Init road model
-	auto road = object("Objects/box.obj", "Textures/road.bmp", glm::vec3(100.0f, 1.0f, 1.0f));
-	road.init_model();
-	road.init_texture();
-	this->road_ = road;
-
-	// Init sign model
-	auto sign = object("Objects/sign.obj", "Textures/sign.bmp", glm::vec3(100.0f, 100.0f, 100.0f));
-	sign.init_model();
-	sign.init_texture();
-	this->sign_ = sign;
-
-	// Init light position
+	// Set variables
+	this->car_ = m_car;
+	this->floor_ = plane("Textures/grass.bmp");
+	this->road_ = plane("Textures/road.bmp");
+	this->sign_ = sign();
 	this->light_position_ = glm::vec3(4.0f, 4.0f, 4.0f);
 
 	// Init other scene methods

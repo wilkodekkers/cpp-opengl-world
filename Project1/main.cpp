@@ -2,8 +2,10 @@
 
 #include <GL/glew.h>
 #include <GL/glut.h>
+#include <SOIL2.h>
 
-#include "scene.h"
+#include "Scene.h"
+#include "Shader.h"
 
 using namespace std;
 
@@ -25,6 +27,54 @@ unsigned const int delta_time = 10;
 //--------------------------------------------------------------------------------
 
 scene m_scene;
+GLuint sky_box_vao;
+GLuint sky_box_vbo;
+GLuint cube_map_texture;
+Shader sky_box_shader;
+GLfloat sky_box_vertices[] = {
+	// Positions
+	-1.0f,  1.0f, -1.0f,
+	-1.0f, -1.0f, -1.0f,
+	1.0f, -1.0f, -1.0f,
+	1.0f, -1.0f, -1.0f,
+	1.0f,  1.0f, -1.0f,
+	-1.0f,  1.0f, -1.0f,
+
+	-1.0f, -1.0f,  1.0f,
+	-1.0f, -1.0f, -1.0f,
+	-1.0f,  1.0f, -1.0f,
+	-1.0f,  1.0f, -1.0f,
+	-1.0f,  1.0f,  1.0f,
+	-1.0f, -1.0f,  1.0f,
+
+	1.0f, -1.0f, -1.0f,
+	1.0f, -1.0f,  1.0f,
+	1.0f,  1.0f,  1.0f,
+	1.0f,  1.0f,  1.0f,
+	1.0f,  1.0f, -1.0f,
+	1.0f, -1.0f, -1.0f,
+
+	-1.0f, -1.0f,  1.0f,
+	-1.0f,  1.0f,  1.0f,
+	1.0f,  1.0f,  1.0f,
+	1.0f,  1.0f,  1.0f,
+	1.0f, -1.0f,  1.0f,
+	-1.0f, -1.0f,  1.0f,
+
+	-1.0f,  1.0f, -1.0f,
+	1.0f,  1.0f, -1.0f,
+	1.0f,  1.0f,  1.0f,
+	1.0f,  1.0f,  1.0f,
+	-1.0f,  1.0f,  1.0f,
+	-1.0f,  1.0f, -1.0f,
+
+	-1.0f, -1.0f, -1.0f,
+	-1.0f, -1.0f,  1.0f,
+	1.0f, -1.0f, -1.0f,
+	1.0f, -1.0f, -1.0f,
+	-1.0f, -1.0f,  1.0f,
+	1.0f, -1.0f,  1.0f
+};
 
 bool is_fullscreen = false;
 
@@ -205,6 +255,16 @@ void render()
 	update_camera();
 	m_scene.render();
 
+	glDepthFunc(GL_LEQUAL);
+	sky_box_shader.Use();
+	glUniformMatrix4fv(glGetUniformLocation(sky_box_shader.Program, "view"), 1, GL_FALSE, value_ptr(m_scene.get_camera()->get_view()));
+	glUniformMatrix4fv(glGetUniformLocation(sky_box_shader.Program, "projection"), 1, GL_FALSE, value_ptr(m_scene.get_camera()->get_projection()));
+	glBindVertexArray(sky_box_vao);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cube_map_texture);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+	glDepthFunc(GL_LESS);
+
 	glutSwapBuffers();
 }
 
@@ -258,6 +318,32 @@ void init_scene()
 	m_scene.init(fragshader_name, vertexshader_name, GLUT_SCREEN_WIDTH, GLUT_SCREEN_HEIGHT);
 }
 
+static GLuint LoadCubemap(vector<const GLchar* > faces)
+{
+	GLuint textureID;
+	glGenTextures(1, &textureID);
+
+	int imageWidth, imageHeight;
+	unsigned char* image;
+
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+	for (GLuint i = 0; i < faces.size(); i++)
+	{
+		image = SOIL_load_image(faces[i], &imageWidth, &imageHeight, 0, SOIL_LOAD_RGB);
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, imageWidth, imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+		SOIL_free_image_data(image);
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+	return textureID;
+}
+
 int main(const int argc, char** argv)
 {
 	// Hide console window
@@ -269,6 +355,27 @@ int main(const int argc, char** argv)
 
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
+
+	// SKYBOX
+	sky_box_shader = Shader("skybox.vs", "skybox.frag");
+	
+	glGenVertexArrays(1, &sky_box_vao);
+	glGenBuffers(1, &sky_box_vbo);
+	glBindVertexArray(sky_box_vao);
+	glBindBuffer(GL_ARRAY_BUFFER, sky_box_vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(sky_box_vertices), &sky_box_vertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+
+	std::vector<const GLchar*> faces;
+	faces.push_back("Textures/skybox/right.tga");
+	faces.push_back("Textures/skybox/left.tga");
+	faces.push_back("Textures/skybox/top.tga");
+	faces.push_back("Textures/skybox/bottom.tga");
+	faces.push_back("Textures/skybox/back.tga");
+	faces.push_back("Textures/skybox/front.tga");
+	
+	cube_map_texture = LoadCubemap(faces);
 
 	// Main loop
 	glutMainLoop();

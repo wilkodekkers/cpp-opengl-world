@@ -104,11 +104,16 @@
     <ClInclude Include="street_light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="fragmentshader.fsh" />
     <None Include="fragmentshader.frag" />
     <None Include="vertexshader.vert" />
+    <None Include="skybox.frag" />
+    <None Include="skybox.vs" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="vertexshader.vsh" />

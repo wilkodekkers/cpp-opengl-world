@@ -9,12 +9,12 @@ class skybox
 	GLuint sky_box_vao;
 	GLuint sky_box_vbo;
 	GLuint cube_map_texture;
-	Shader sky_box_shader;
+	shader sky_box_shader;
 public:
 	skybox();
 	~skybox() = default;
 
 	void init();
-	void render(const glm::mat4& view, const glm::mat4& projection);
+	void render(const glm::mat4& view, const glm::mat4& projection) const;
 };
 

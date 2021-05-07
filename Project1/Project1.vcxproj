@@ -142,6 +142,7 @@
     <ClCompile Include="roof.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="sign.cpp" />
+    <ClCompile Include="skybox.cpp" />
     <ClCompile Include="street_light.cpp" />
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
@@ -159,6 +160,7 @@
     <ClInclude Include="scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="sign.h" />
+    <ClInclude Include="skybox.h" />
     <ClInclude Include="street_light.h" />
     <ClInclude Include="texture.h" />
   </ItemGroup>

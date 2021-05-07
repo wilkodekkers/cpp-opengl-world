@@ -3,16 +3,19 @@
 #include "Object.h"
 #include "house.h"
 #include "camera.h"
+#include "car.h"
+#include "plane.h"
+#include "sign.h"
 
 class scene
 {
 	std::vector<object*> objects_;
 	
-	object sign_;
-	object floor_;
-	object road_;
+	sign sign_;
+	plane floor_;
+	plane road_;
 	house house_[8];
-	object car_;
+	car car_;
 	glm::vec3 light_position_;
 	
 	GLuint program_id_;

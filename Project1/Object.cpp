@@ -64,6 +64,10 @@ void object::scale(glm::vec3 scales)
 	model = glm::scale(model, scales);
 }
 
+void object::animate()
+{
+}
+
 void object::init_model()
 {
 	// Init the model

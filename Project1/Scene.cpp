@@ -8,8 +8,11 @@
 
 scene::scene() 
 {
-	// Init scene variables to remove warnings
 	program_id_ = GLuint();
+	floor_ = plane("Textures/grass.bmp");
+	road_ = plane("Textures/road.bmp");
+	sign_ = sign();
+	light_position_ = glm::vec3(4.0f, 4.0f, 4.0f);
 }
 
 scene::~scene() = default;
@@ -19,8 +22,8 @@ void scene::render()
 	// Attach to program_id
 	glUseProgram(this->program_id_);
 
-	car_.rotate(0.03f, glm::vec3(0.0f, 1.0f, 0.0f));
-	sign_.rotate(0.01f, glm::vec3(1.0f, 0.0f, 0.0f));
+	car_.animate();
+	sign_.animate();
 
 	const glm::mat4 view = get_camera()->get_view();
 	
@@ -54,10 +57,6 @@ void scene::init(const char* fragment, const char* vertex, const int width, cons
 
 	// Set variables
 	this->car_ = m_car;
-	this->floor_ = plane("Textures/grass.bmp");
-	this->road_ = plane("Textures/road.bmp");
-	this->sign_ = sign();
-	this->light_position_ = glm::vec3(4.0f, 4.0f, 4.0f);
 
 	// Init other scene methods
 	this->init_shaders(fragment, vertex);
@@ -65,7 +64,7 @@ void scene::init(const char* fragment, const char* vertex, const int width, cons
 	this->init_buffers();
 }
 
-void scene::init_camera(int width, int height)
+void scene::init_camera(const int width, const int height)
 {
 	// Set camera variables
 	this->m_camera_ = camera(width, height);
@@ -128,11 +127,11 @@ void scene::init_buffers()
 
 void scene::init_shaders(const char* fragment, const char* vertex)
 {
-	char* vertexshader = glsl::read_file(vertex);
-	const GLuint vsh_id = glsl::make_vertex_shader(vertexshader);
+	char* vertex_shader = glsl::read_file(vertex);
+	const GLuint vsh_id = glsl::make_vertex_shader(vertex_shader);
 
-	char* fragshader = glsl::read_file(fragment);
-	const GLuint fsh_id = glsl::make_fragment_shader(fragshader);
+	char* frag_shader = glsl::read_file(fragment);
+	const GLuint fsh_id = glsl::make_fragment_shader(frag_shader);
 
 	program_id_ = glsl::make_shader_program(vsh_id, fsh_id);
 

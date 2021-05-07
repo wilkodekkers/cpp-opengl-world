@@ -44,7 +44,8 @@ public:
 	void move(glm::vec3 pos);
 	void rotate(float radians, glm::vec3 angles);
 	void scale(glm::vec3 scales);
-
+	virtual void animate();
+	
 	void init_model();
 	void init_texture();
 	void init_shader(const char* fragment, const char* vertex, GLuint program_id);

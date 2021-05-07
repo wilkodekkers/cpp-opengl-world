@@ -6,5 +6,7 @@ class sign : public object
 public:
 	sign();
 	~sign();
+
+	void animate() override;
 };
 

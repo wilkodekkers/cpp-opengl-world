@@ -6,5 +6,7 @@ class car : public object
 public:
 	car();
 	~car();
+
+	void animate() override;
 };
 

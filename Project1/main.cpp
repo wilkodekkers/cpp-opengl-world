@@ -2,7 +2,6 @@
 
 #include <GL/glew.h>
 #include <GL/glut.h>
-#include <SOIL2.h>
 
 #include "Scene.h"
 #include "Shader.h"
